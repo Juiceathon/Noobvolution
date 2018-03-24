@@ -1,0 +1,30 @@
+# Don't check auto-generated stuff into git
+coverage
+build
+node_modules
+stats.json
+package-lock.json
+
+# Cruft
+.DS_Store
+npm-debug.log
+.idea
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional eslint cache
+.eslintcache
+
+# Yarn Integrity file
+.yarn-integrity
+
+# IDE Config File
+.vscode/
+
+# Code coverage tools
+coverage/
