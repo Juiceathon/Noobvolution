@@ -1,31 +1,22 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+import LambdaDemo from './lambda/LambdaDemo.jsx';
+import FixedMenu from './components/FixedMenu.jsx';
 import './App.css';
-
-class LambdaDemo extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {loading: false, msg: null};
-  }
-
-  handleClick = (e) => {
-    e.preventDefault();
-
-    this.setState({loading: true});
-    fetch('/.netlify/functions/hello')
-      .then(response => response.json())
-      .then(json => this.setState({loading: false, msg: json.msg}));
-  }
-
-  render() {
-    const {loading, msg} = this.state;
-
-    return <p>
-      <button onClick={this.handleClick}>{loading ? 'Loading...' : 'Call Lambda'}</button><br/>
-      <span>{msg}</span>
-    </p>
-  }
-}
+import 'semantic-ui-css/semantic.min.css';
+import {
+  Button,
+  Container,
+  Divider,
+  Grid,
+  Header,
+  Icon,
+  Image,
+  List,
+  Menu,
+  Segment,
+  Visibility,
+} from 'semantic-ui-react';
 
 class App extends Component {
   render() {
