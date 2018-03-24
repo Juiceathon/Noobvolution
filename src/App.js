@@ -6,10 +6,15 @@ import {
   Link
 } from 'react-router-dom';
 
+// Header and Footer Components
 import Footer from './components/Footer.jsx';
 import FixedMenu from './components/FixedMenu.jsx';
 
+// Routes
 import HomePage from './components/home/HomePage.jsx';
+import CoachList from './components/coachlist/CoachList.jsx';
+import AboutPage from './components/about/AboutPage.jsx';
+
 
 import './App.css';
 
@@ -21,18 +26,19 @@ class App extends Component {
 
   render() {
     return (
-    <div>
-      <FixedMenu />
+    <Router>
+      <div>
+        <FixedMenu />
+          <Switch> 
 
-      <Router>
-        <Switch> 
-          <Route exact path='/' component={HomePage} />
+            <Route exact path='/' component={HomePage} />
+            <Route path='/about' component={AboutPage} />
+            <Route path='/coachlist' component={CoachList} />
 
-        </Switch>
-      </Router>
-      
-      <Footer />
-    </div>
+          </Switch>
+        <Footer />
+      </div>
+    </Router>
     )
   }
 }
