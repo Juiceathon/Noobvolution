@@ -23,12 +23,14 @@ class App extends Component {
     return (
     <div>
       <FixedMenu />
+
       <Router>
         <Switch> 
           <Route exact path='/' component={HomePage} />
 
         </Switch>
       </Router>
+      
       <Footer />
     </div>
     )
