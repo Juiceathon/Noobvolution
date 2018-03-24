@@ -1,13 +1,42 @@
 const pg = require('pg');
 const path = require('path');
 const moment = require('moment');
+const unixHours = require('./unixConversion');
 
-const connection = process.env.DATABASE_URL ? 
-  { connectionString: process.env.DATABASE_URL } : 
-  { host: 'localhost', database: 'lawa_db' };
+const connection = {
+  user: 'thejuice',
+  password: 'juiceathon',
+  host: 'noobvolution-db.ckepohehkx7u.us-west-1.rds.amazonaws.com',
+  database: 'noobvolution-db'
+}
 
 const pool = new pg.Pool(connection);
 pool.connect();
+
+module.exports = {
+  getGameCoaches: (gameId) => {
+    return pool.query(
+      `SELECT coaches.coach_id, coaches.coach_name, coaches.avatar_url, games.game_name from coaches 
+      INNER JOIN games 
+      ON coaches.game_id = games.game_id AND games.game_id = $1`, 
+      [gameId]);
+  },
+  findCoachBookings: (coachId) => {
+    // return all bookings in the next 2 weeks
+    return pool.query(
+      `SELECT timeslot from bookings 
+      WHERE timeslot = $1 AND timeslot >= $2 AND timeslot < $3`,
+      [coachId, unixHours(0), unixHours(7)]);
+  },
+  findPlayerBookings: (playerId) => {
+    // return all bookings in the next 2 weeks
+  },
+  
+}
+const getGameCoaches = function (gameId) {
+  return pool.query(`SELECT * from coaches INNER JOIN games
+  ON coaches.game_id = games.game_id AND  WHERE game_id=$1`, [gameId]);
+};
 
 //get all users following
 const getUsersFollowing = function (userId) {
@@ -142,29 +171,3 @@ const updateProfImg = function (userId, fileName, timestamp) {
 const updateDescription = function(userId, description) {
   return pool.query('UPDATE users SET description = $1 WHERE user_id = $2', [description, userId])
 }
-
-module.exports = {
-  getUsersFollowing,
-  getUsersFollowers,
-  getAllPosts,
-  getPostsLiked,
-  insertPost,
-  getAllUsernames,
-  getUserPosts,
-  getUserProfile,
-  addLike,
-  rmLike,
-  addFollow,
-  rmFollow,
-  addComment,
-  checkForEmail,
-  rmComment,
-  checkForUser,
-  insertNewUser,
-  getLikesOnPost,
-  checkLike, 
-  checkFollow,
-  getAllCommentFromPost,
-  updateProfImg,
-  updateDescription
-};

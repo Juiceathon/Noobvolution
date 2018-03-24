@@ -33,6 +33,7 @@
     "netlify-lambda": "^0.3.0",
     "path": "^0.12.7",
     "pg": "^7.4.1",
+    "pg-native": "^2.2.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-router": "^4.2.0",
