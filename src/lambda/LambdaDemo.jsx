@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 class LambdaDemo extends Component {
   constructor(props) {
     super(props);
