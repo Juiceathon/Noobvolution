@@ -58,9 +58,8 @@ class LoggedInDashboard extends Component {
   getAppointments () {
     fetch(`/.netlify/functions/handler?type=appointments&playerId=${this.props.loggedInUser.player_id}`)
       .then(response => response.json())
-      .then(json => {
-        console.log(json);
-      });
+      .then(json => { this.setState({appointments : json} )
+      }); 
   }
 
   render() {
@@ -73,7 +72,7 @@ class LoggedInDashboard extends Component {
             </Header>
           </Grid.Row>
           <Grid.Row>
-            <SessionTable />
+            <SessionTable appts={this.state.appointments}/>
           </Grid.Row>
           <Grid.Row>
             <Header as='h2' style={{marginTop: 20, marginBottom: 10}}>
@@ -86,10 +85,10 @@ class LoggedInDashboard extends Component {
         </Grid.Column>
         <Grid.Column width={6}>
         <Card>
-          <ImageComponent src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Antu_im-invisible-user.svg/2000px-Antu_im-invisible-user.svg.png' />
+            <ImageComponent src={this.props.loggedInUser.avatar_url}/>
           <Card.Content>
             <Card.Header>
-              Matthew
+              {this.props.loggedInUser.player_name.split(' ')[0]}
             </Card.Header>
             <Card.Meta>
               <span className='date'>
@@ -97,7 +96,7 @@ class LoggedInDashboard extends Component {
               </span>
             </Card.Meta>
             <Card.Description>
-              Matthew is Bronze V.
+              {this.props.loggedInUser.player_name.split(' ')[0]} is Bronze V.
             </Card.Description>
           </Card.Content>
           <Card.Content extra>
