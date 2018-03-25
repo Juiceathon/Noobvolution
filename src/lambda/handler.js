@@ -68,27 +68,41 @@ export function handler(event, context, callback) {
       } else {
         respondNotFound();
       }
-
     } else {
       respondNotFound();
     }
   } else if (event.httpMethod === 'POST') {
     let body = JSON.parse(event.body);
-    if (body.type === 'booking') {
+
+    if (body.type === 'booking') { // create new booking
       db.createBooking(body.timeslot, body.coachId, body.playerId, body.gameId)
         .then(respondCreated)
         .catch(returnError)
-    } else if (body.type === 'login') {
+
+    } else if (body.type === 'login') { // login for players and coaches
+      db.loginUser(body.email)
+        .then(respondOk)
+        .catch(returnError)
 
     } else if (body.type === 'signup') {
+      if (body.playerName) { // sign up for players
+        db.signUpPlayer(body.playerName, body.playerEmail, body.avatarUrl)
+          .then(respondCreated)
+          .catch(returnError)
+      } else if (body.coachName) { // sign up for coaches
+        // ADD TOKEN GENERATION FUNCTION
+        let sessionId = 5;
+        db.signUpCoach(body.coachName, body.coachEmail, body.gameId, body.avatarUrl, sessionId, body.hourlyRate, body.position)
+          .then(respondCreated)
+          .catch(returnError)
 
+      } else {
+        respondNotFound();
+      }
     } else {
       respondNotFound();
     }
   } else {
     respondNotFound();
   }
-
-}
-
-// insert new booking
+};

@@ -45,7 +45,7 @@ module.exports = {
       [gameId]);
   },
   getCoachDetails: (coachId) => {
-    console.log('getcoach')
+    // returns all coach details
     return pool.query(
       `SELECT * 
       FROM coaches 
@@ -55,7 +55,7 @@ module.exports = {
   showCoachBookedApmts: (coachId) => {
     // returns booked unix hour time slots for the next 7 days
     return pool.query(
-      `SELECT bookings.timeslot, players.player_name, players.email, players.avatar_url, games.game_name, games.game_logo
+      `SELECT bookings.timeslot, players.player_name, players.player_email, players.avatar_url, games.game_name, games.game_logo
       FROM bookings
       INNER JOIN players
       ON bookings.player_id = players.player_id AND bookings.coach_id = $1 
@@ -76,11 +76,30 @@ module.exports = {
       ON games.game_id = bookings.game_id`,
       [playerId, toUnix(0), toUnix(7)]);
   },
-  // new booking
-  // sign up
-  // log in
-  // 
-
+  loginUser: (email) => {
+    // logs in either coach or player based on email
+    let player = pool.query(`SELECT * FROM players WHERE player_email = $1`, [email]);
+    let coach = pool.query(`SELECT * FROM coaches WHERE coach_email = $1`, [email])
+    return Promise.all([player, coach])
+      .then((result) => {
+        if (result[0].rowCount) {
+          return result[0];
+        } else if (result[1].rowCount) {
+          return result[1];
+        }
+        return result[0];
+      })
+  },
+  signUpPlayer: (name, email, avatarUrl) => {
+    return pool.query(`INSERT INTO players (player_name, player_email, avatar_url) 
+      VALUES ($1, $2, $3)`,
+      [name, email, avatarUrl]);
+  },
+  signUpCoach: (coachName, coachEmail, gameId, avatarUrl, sessionId, hourlyRate, position) => {
+    return pool.query(`INSERT INTO coaches (coach_name, coach_email, game_id, avatar_url, session_id, hourly_rate, position) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [coachName, coachEmail, gameId, avatarUrl, sessionId, hourlyRate, position]);
+  }
 }
 // const getGameCoaches = function (gameId) {
 //   return pool.query(`SELECT * from coaches INNER JOIN games

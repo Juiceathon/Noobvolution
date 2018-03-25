@@ -17707,17 +17707,32 @@ function handler(event, context, callback) {
     }
   } else if (event.httpMethod === 'POST') {
     let body = JSON.parse(event.body);
+
     if (body.type === 'booking') {
+      // create new booking
       db.createBooking(body.timeslot, body.coachId, body.playerId, body.gameId).then(respondCreated).catch(returnError);
-    } else if (body.type === 'login') {} else if (body.type === 'signup') {} else {
+    } else if (body.type === 'login') {
+      // login for players and coaches
+      db.loginUser(body.email).then(respondOk).catch(returnError);
+    } else if (body.type === 'signup') {
+      if (body.playerName) {
+        // sign up for players
+        db.signUpPlayer(body.playerName, body.playerEmail, body.avatarUrl).then(respondCreated).catch(returnError);
+      } else if (body.coachName) {
+        // sign up for coaches
+        // ADD TOKEN GENERATION FUNCTION
+        let sessionId = 5;
+        db.signUpCoach(body.coachName, body.coachEmail, body.gameId, body.avatarUrl, sessionId, body.hourlyRate, body.position).then(respondCreated).catch(returnError);
+      } else {
+        respondNotFound();
+      }
+    } else {
       respondNotFound();
     }
   } else {
     respondNotFound();
   }
-}
-
-// insert new booking
+};
 
 /***/ }),
 /* 142 */
@@ -17766,14 +17781,14 @@ module.exports = {
       ON coaches.game_id = games.game_id AND games.game_id = $1`, [gameId]);
   },
   getCoachDetails: coachId => {
-    console.log('getcoach');
+    // returns all coach details
     return pool.query(`SELECT * 
       FROM coaches 
       WHERE coach_id = $1`, [coachId]);
   },
   showCoachBookedApmts: coachId => {
     // returns booked unix hour time slots for the next 7 days
-    return pool.query(`SELECT bookings.timeslot, players.player_name, players.email, players.avatar_url, games.game_name, games.game_logo
+    return pool.query(`SELECT bookings.timeslot, players.player_name, players.player_email, players.avatar_url, games.game_name, games.game_logo
       FROM bookings
       INNER JOIN players
       ON bookings.player_id = players.player_id AND bookings.coach_id = $1 
@@ -17790,12 +17805,28 @@ module.exports = {
       AND timeslot >= $2 AND timeslot < $3
       INNER JOIN games
       ON games.game_id = bookings.game_id`, [playerId, toUnix(0), toUnix(7)]);
+  },
+  loginUser: email => {
+    // logs in either coach or player based on email
+    let player = pool.query(`SELECT * FROM players WHERE player_email = $1`, [email]);
+    let coach = pool.query(`SELECT * FROM coaches WHERE coach_email = $1`, [email]);
+    return Promise.all([player, coach]).then(result => {
+      if (result[0].rowCount) {
+        return result[0];
+      } else if (result[1].rowCount) {
+        return result[1];
+      }
+      return result[0];
+    });
+  },
+  signUpPlayer: (name, email, avatarUrl) => {
+    return pool.query(`INSERT INTO players (player_name, player_email, avatar_url) 
+      VALUES ($1, $2, $3)`, [name, email, avatarUrl]);
+  },
+  signUpCoach: (coachName, coachEmail, gameId, avatarUrl, sessionId, hourlyRate, position) => {
+    return pool.query(`INSERT INTO coaches (coach_name, coach_email, game_id, avatar_url, session_id, hourly_rate, position) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7)`, [coachName, coachEmail, gameId, avatarUrl, sessionId, hourlyRate, position]);
   }
-  // new booking
-  // sign up
-  // log in
-  // 
-
   // const getGameCoaches = function (gameId) {
   //   return pool.query(`SELECT * from coaches INNER JOIN games
   //   ON coaches.game_id = games.game_id AND  WHERE game_id=$1`, [gameId]);
