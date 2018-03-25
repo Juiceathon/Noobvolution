@@ -34,7 +34,7 @@ class App extends Component {
         <FixedMenu />
           <Switch> 
 
-            <Route exact path='/home' component={VideoChat} />
+            <Route exact path='/home' component={LoggedOutHomePage} />
             <Route path='/about' component={AboutPage} />
             <Route path='/coachlist' component={CoachList} />
             <Route path='/login' component={LoginPage} />
