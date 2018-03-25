@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import {
   Table, 
 } from 'semantic-ui-react'
+import SessionAppts from './SessionAppts.jsx';
 
 class SessionTable extends Component {
   constructor(props) {
     super(props);
-    this.state = this.props.appts
+    this.state = {
+      appts: this.props.appts
+    }
   }
 
   render() {
@@ -23,12 +26,7 @@ class SessionTable extends Component {
         </Table.Header>
 
         <Table.Body>
-          <Table.Row>
-            <Table.Cell>Impact</Table.Cell>
-            <Table.Cell>League of Legends</Table.Cell>
-            <Table.Cell>Mar, 25th 2018 10:00PM</Table.Cell>
-            <Table.Cell>Video Icon</Table.Cell>
-          </Table.Row>
+          {this.props.appts.map(appt => <SessionAppts appt={appt} history={this.props.history} />)}
         </Table.Body>
       </Table>
     )

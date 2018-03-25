@@ -72,7 +72,7 @@ class LoggedInDashboard extends Component {
             </Header>
           </Grid.Row>
           <Grid.Row>
-            <SessionTable appts={this.state.appointments}/>
+            <SessionTable history={this.props.history} appts={this.state.appointments}/>
           </Grid.Row>
           <Grid.Row>
             <Header as='h2' style={{marginTop: 20, marginBottom: 10}}>
