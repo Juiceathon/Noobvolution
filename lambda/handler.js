@@ -58795,7 +58795,7 @@ webpackContext.id = 274;
 
 
 var OpenTok = __webpack_require__(276);
-var { API_KEY, API_SECRET } = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../utils/config\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var { API_KEY, API_SECRET } = __webpack_require__(417);
 var opentok = new OpenTok(API_KEY, API_SECRET);
 
 var createSessionId = () => {
@@ -92655,6 +92655,18 @@ exports.unregisterCallback = function(config, callbackId, callback) {
   });
 };
 
+
+/***/ }),
+/* 417 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+    API_KEY: '46086672',
+    API_SECRET: 'ee8c6482f67cd2d535447da73855afa61ee7769f'
+};
 
 /***/ })
 /******/ ])));

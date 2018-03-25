@@ -46,7 +46,7 @@ class App extends Component {
     return (
     <Router>
       <div>
-          {this.loggedInUser === null ? <LoggedInMenu /> : <FixedMenu /> }
+          {this.state.loggedInUser !== null ? <LoggedInMenu /> : <FixedMenu /> }
 
           <Switch> 
 
