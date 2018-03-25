@@ -109566,18 +109566,7 @@ exports.unregisterCallback = function(config, callbackId, callback) {
 
 
 /***/ }),
-/* 422 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-  API_KEY: '46086672',
-  API_SECRET: 'ee8c6482f67cd2d535447da73855afa61ee7769f'
-};
-
-/***/ }),
+/* 422 */,
 /* 423 */,
 /* 424 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -109586,7 +109575,7 @@ module.exports = {
 
 
 var OpenTok = __webpack_require__(282);
-var { API_KEY, API_SECRET } = __webpack_require__(422);
+var { API_KEY, API_SECRET } = __webpack_require__(425);
 var opentok = new OpenTok(API_KEY, API_SECRET);
 
 var createSessionId = () => {
@@ -109608,6 +109597,18 @@ var createToken = sessionId => {
 module.exports = {
   createSessionId,
   createToken
+};
+
+/***/ }),
+/* 425 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  API_KEY: '46086672',
+  API_SECRET: 'ee8c6482f67cd2d535447da73855afa61ee7769f'
 };
 
 /***/ })
