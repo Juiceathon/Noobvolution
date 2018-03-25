@@ -5,6 +5,7 @@ import {
   Button,
   Container,
   Menu,
+  Dropdown
 } from 'semantic-ui-react';
 
 
@@ -46,17 +47,26 @@ class FixedMenu extends Component {
           </Menu.Item>
 
           <Menu.Menu position='right'>
-            <Menu.Item className='item'>
-              <Button as='a'>Log in</Button>
+            <Menu.Item 
+            as={NavLink}
+            active={activeItem === 'Login'}
+            onClick={this.handleItemClick}
+            to='/login'>
+            Log in
             </Menu.Item>
-            <Menu.Item>
-              <Button as='a' primary>Sign Up</Button>
-            </Menu.Item>
+
+            <Dropdown item text='Sign Up'>
+              <Dropdown.Menu>
+                <Dropdown.Item>I am a Coach</Dropdown.Item>
+                <Dropdown.Item>I am a Player</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </Menu.Menu>
         </Container>
       </Menu>
     )
   }
 }
+
 
 export default withRouter(FixedMenu);
