@@ -2,7 +2,8 @@ export function handler(event, context, callback) {
   console.log(event)
 
   let respondOk = (result) => {
-    callback(null, {statusCode: 200, body: JSON.stringify(result.rows || '')})
+    console.log(result)
+    callback(null, {statusCode: 200, body: JSON.stringify(result.rows || [])})
   }
   let respondCreated = () => {
     callback(null, { statusCode: 201, body: 'Created' });
@@ -15,6 +16,7 @@ export function handler(event, context, callback) {
   };
   
   const db = require('../../database-postgres/index');
+  const unix = require('../../database-postgres/unixConversion');
 
   if (event.httpMethod === 'GET') {
     let query = event.queryStringParameters;
@@ -38,7 +40,12 @@ export function handler(event, context, callback) {
       
     } else if (query.type === 'availability') {
       if (query.coachId) { // Returns occupied timeslots for coach
+        const lodash = require('lodash');
+        let allTimeslots = unix.generateUnixHourSlots();
         db.findCoachBookedTimeslots(query.coachId)
+          .then((results) => {
+            return {rows: _.difference(results.rows.map((item) => item.timeslot), allTimeslots)}
+          })
           .then(respondOk)
           .catch(returnError)
       } else if (query.playerId) { // Returns occupied timeslots for player
@@ -106,3 +113,5 @@ export function handler(event, context, callback) {
     respondNotFound();
   }
 };
+
+
