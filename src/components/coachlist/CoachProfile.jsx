@@ -39,7 +39,7 @@ class CoachProfile extends Component {
       type: 'booking',
       timeslot: this.state.selectedOption, 
       coachId: this.props.coach.coach_id, 
-      playerId: this.props.userObj.player_id || 2, 
+      playerId: this.props.loggedInUser.player_id || 2, 
       gameId: this.props.coach.game_id
     }
     fetch('.netlify/functions/handler', {
@@ -75,7 +75,7 @@ class CoachProfile extends Component {
                 {this.props.coach.description}
               </Item.Description>
               <Item.Extra>
-                <Modal style={{ 'marginTop': '25vh', 'marginLeft': '20vw' }} trigger={
+                { this.props.loggedInUser ? <Modal style={{ 'marginTop': '25vh', 'marginLeft': '20vw' }} trigger={
                   <Button primary floated='right'>
                     Book a Time Slot!
                 <Icon name='right chevron' />
@@ -104,6 +104,7 @@ class CoachProfile extends Component {
                     </Modal.Description>
                   </Modal.Content>
                 </Modal>
+                : ''}
                 <Label>Limited</Label>
               </Item.Extra>
             </Item.Content>

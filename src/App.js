@@ -53,7 +53,7 @@ class App extends Component {
             <Route exact path='/home' component={LoggedOutHomePage} />
             <Route path='/dashboard' component={LoggedInDashboard} />
             <Route path='/about' component={AboutPage} />
-            <Route path='/coachlist' component={CoachList} />
+            <Route path='/coachlist' render={routeProps => <CoachList {...routeProps} loggedInUser={this.state.loggedInUser} />} />
             <Route path='/video' component={VideoChat} />
             <Route path='/login' render={routeProps => <LoginPage {...routeProps} logInUser={this.logInUser} />} />
             <Route path='/signup/coach' component={CoachSignup} />
