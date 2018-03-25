@@ -54,12 +54,11 @@ class LoggedInDashboard extends Component {
     this.getAppointments();
   }
   getAppointments () {
-    fetch(`/.netlify/functions/handler?type=appointments&playerId=${this.props.userObj.player_id}`)
+    fetch(`/.netlify/functions/handler?type=appointments&playerId=${this.props.loggedInUser.player_id}`)
       .then(response => response.json())
       .then(json => {
         console.log(json);
-        // this.setState({ appointments:  });
-      })
+      });
   }
 
   render() {

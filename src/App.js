@@ -51,7 +51,7 @@ class App extends Component {
           <Switch> 
 
             <Route exact path='/home' component={LoggedOutHomePage} />
-            <Route path='/dashboard' component={LoggedInDashboard} />
+            <Route path='/dashboard' render={routeProps => <LoggedInDashboard {...routeProps} loggedInUser={this.state.loggedInUser} /> } />
             <Route path='/about' component={AboutPage} />
             <Route path='/coachlist' render={routeProps => <CoachList {...routeProps} loggedInUser={this.state.loggedInUser} />} />
             <Route path='/video' component={VideoChat} />
