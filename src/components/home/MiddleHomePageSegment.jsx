@@ -31,7 +31,7 @@ class MiddleHomePageSegment extends Component {
                 fluid
                 rounded
                 size='big'
-                src='https://hypb.imgix.net/image/2018/03/facebook-stream-pc-games-through-live-01.jpg?q=75&w=1000&fit=max&auto=compress%2Cformat'
+                src='https://78.media.tumblr.com/8f5022ba4c0749864cf87122d5912bca/tumblr_nlim81MjtY1uq9wyio1_500.gif'
               />
             </Grid.Column>
           </Grid.Row>
