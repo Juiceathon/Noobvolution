@@ -68546,15 +68546,9 @@ exports.unregisterCallback = function(config, callbackId, callback) {
 
 /***/ }),
 /* 422 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-module.exports = {
-  API_KEY: '46086672',
-  API_SECRET: 'ee8c6482f67cd2d535447da73855afa61ee7769f'
-};
+throw new Error("Module build failed: Error: ENOENT: no such file or directory, open '/Users/albert/Desktop/Noobvolution/utils/config.js'");
 
 /***/ })
 /******/ ])));
