@@ -37,6 +37,7 @@ class App extends Component {
             <Route exact path='/home' component={LoggedOutHomePage} />
             <Route path='/about' component={AboutPage} />
             <Route path='/coachlist' component={CoachList} />
+            <Route path='/video' component={VideoChat} />
             <Route path='/login' component={LoginPage} />
             <Route path='/signup/coach' component={CoachSignup} />
             <Route path='/signup/player' component={PlayerSignup} />

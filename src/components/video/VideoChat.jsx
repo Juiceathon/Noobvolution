@@ -14,8 +14,8 @@ let otCore;
 const otCoreOptions = {
   credentials: {
     apiKey: config.apiKey,
-    sessionId: config.sessionId,
-    token: createToken(config.sessionId),
+    sessionId: config.sessionId, // Change to get session id from url
+    token: createToken(config.sessionId), // generate token from session id
   },
   // A container can either be a query selector or an HTML Element
   streamContainers(pubSub, type, data, stream) {
