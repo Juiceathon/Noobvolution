@@ -7,8 +7,10 @@ import {
   Label, 
   Grid,
   Card,
-  Feed
+  Feed, 
+  Header
 } from 'semantic-ui-react'
+import SessionTable from './SessionTable.jsx';
 
 const events = [{
     date: '1 Hour Ago',
@@ -65,7 +67,22 @@ class LoggedInDashboard extends Component {
     return (
       <Grid columns={16} padded>
         <Grid.Column width={10}>
-          <Feed events={events} />
+          <Grid.Row>
+            <Header as='h2' style={{ marginTop: 20, marginBottom: 10 }}>
+              Player Upcoming Sessions
+            </Header>
+          </Grid.Row>
+          <Grid.Row>
+            <SessionTable />
+          </Grid.Row>
+          <Grid.Row>
+            <Header as='h2' style={{marginTop: 20, marginBottom: 10}}>
+              Player Activity Feed
+            </Header>
+          </Grid.Row>
+          <Grid.Row>
+            <Feed events={events} />
+          </Grid.Row>
         </Grid.Column>
         <Grid.Column width={6}>
         <Card>
