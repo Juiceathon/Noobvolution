@@ -30,3 +30,4 @@ yarn-error.log*
 coverage/
 
 src/lambda/config.js
+lambda/config.js
