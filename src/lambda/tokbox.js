@@ -1,5 +1,5 @@
 var OpenTok = require('opentok');
-var {API_KEY, API_SECRET} = require('./config.js');
+var {API_KEY, API_SECRET} = require('../../utils/config');
 var opentok = new OpenTok(API_KEY, API_SECRET);
 var sessionId;
 opentok.createSession({mediaMode:"routed"}, function(error, session) {
