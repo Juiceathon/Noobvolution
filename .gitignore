@@ -30,4 +30,4 @@ yarn-error.log*
 coverage/
 
 src/tokbox/config.js
-src/video/config.json
+src/components/video/config.json
