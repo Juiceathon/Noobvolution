@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router, 
   Switch,
   Route, 
+  Redirect
 } from 'react-router-dom';
 
 // Header and Footer Components
@@ -37,6 +38,7 @@ class App extends Component {
   this.setState({
     loggedInUser: userObj
   })
+
 }
 
   render() {
@@ -44,7 +46,8 @@ class App extends Component {
     return (
     <Router>
       <div>
-          {this.loggedInUser === null ? <LoggedInMenu /> : <FixedMenu /> }
+          {this.state.loggedInUser !== null ? <LoggedInMenu /> : <FixedMenu /> }
+
           <Switch> 
 
             <Route exact path='/home' component={LoggedOutHomePage} />

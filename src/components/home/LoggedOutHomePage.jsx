@@ -7,6 +7,7 @@ import {
   Header,
   Icon,
   Segment,
+  Image
 } from 'semantic-ui-react';
 
 class LoggedOutHomePage extends Component {
@@ -21,7 +22,7 @@ class LoggedOutHomePage extends Component {
         <Segment
           inverted
           textAlign='center'
-          style={{ minHeight: 700, padding: '1em 0em' }}
+          style={{ minHeight: 700, padding: '1em 0em', backgroundImage: `url('https://orig00.deviantart.net/84ec/f/2013/179/7/6/spirit_guard_udyr__animated_gif__by_darkstriiker-d6b1ard.gif')`}}
           vertical
         >
           <Container text>
