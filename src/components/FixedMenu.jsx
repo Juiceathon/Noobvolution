@@ -57,8 +57,23 @@ class FixedMenu extends Component {
 
             <Dropdown item text='Sign Up'>
               <Dropdown.Menu>
-                <Dropdown.Item>I am a Coach</Dropdown.Item>
-                <Dropdown.Item>I am a Player</Dropdown.Item>
+                <Dropdown.Item
+                as={NavLink}
+                active={activeItem === 'Signup-Coach'}
+                onClick={this.handleItemClick}
+                to='/signup/coach'
+                >
+                  I am a Coach
+                </Dropdown.Item>
+
+                <Dropdown.Item
+                  as={NavLink}
+                  active={activeItem === 'Signup-Player'}
+                  onClick={this.handleItemClick}
+                  to='/signup/player'>
+                  I am a Player
+                  </Dropdown.Item>
+                  
               </Dropdown.Menu>
             </Dropdown>
           </Menu.Menu>
