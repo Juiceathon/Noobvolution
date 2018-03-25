@@ -14,6 +14,9 @@ import FixedMenu from './components/FixedMenu.jsx';
 import LoggedOutHomePage from './components/home/LoggedOutHomePage.jsx';
 import CoachList from './components/coachlist/CoachList.jsx';
 import AboutPage from './components/about/AboutPage.jsx';
+import LoginPage from './components/loginpage/LoginPage.jsx';
+import CoachSignup from './components/signup/CoachSignup.jsx';
+import PlayerSignup from './components/signup/PlayerSignup.jsx';
 
 
 import './App.css';
@@ -34,6 +37,9 @@ class App extends Component {
             <Route exact path='/home' component={LoggedOutHomePage} />
             <Route path='/about' component={AboutPage} />
             <Route path='/coachlist' component={CoachList} />
+            <Route path='/login' component={LoginPage} />
+            <Route path='/signup/coach' component={CoachSignup} />
+            <Route path='/signup/player' component={PlayerSignup} />
 
           </Switch>
         <Footer />
