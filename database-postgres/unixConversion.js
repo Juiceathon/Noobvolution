@@ -9,6 +9,3 @@ module.exports = {
     return moment(unixTime * 1000 * 3600).format('MMM Do YYYY, h:mm a');
   }
 }
-
-console.log(module.exports.toUnix(0));
-console.log(module.exports.formattedFromUnix(module.exports.toUnix(0)));

@@ -1,18 +1,14 @@
 export function handler(event, context, callback) {
   console.log(event)
-  let query = event.queryStringParameters;
 
   let respondOk = (result) => {
-    console.log('result here', result)
-    callback(null, {
-      statusCode: 200,
-      body: JSON.stringify(result.rows)
-    })
+    callback(null, {statusCode: 200, body: JSON.stringify(result.rows || '')})
   }
-  let notFound = () => {
-    callback(null, {
-      statusCode: 404
-    });
+  let respondCreated = () => {
+    callback(null, { statusCode: 201, body: 'Created' });
+  }
+  let respondNotFound = () => {
+    callback(null, { statusCode: 404, body: 'Not Found'});
   }
   let returnError = (err) => {
     callback(err);
@@ -21,12 +17,11 @@ export function handler(event, context, callback) {
   const db = require('../../database-postgres/index');
 
   if (event.httpMethod === 'GET') {
-
+    let query = event.queryStringParameters;
     if (query.type === 'search') {
       db.getGameCoaches(query.game) // Returns all coaches for a particular game
         .then(respondOk)
         .catch(returnError)
-
     } else if (query.type === 'booking'){ 
       if (query.coachId) { // Returns all page details for booking a coach
         let results = [db.getCoachDetails(query.coachId), db.findCoachBookedTimeslots(query.coachId)];
@@ -38,7 +33,7 @@ export function handler(event, context, callback) {
           .then(respondOk)
           .catch(returnError)
       } else {
-        notFound();
+        respondNotFound();
       }
       
     } else if (query.type === 'availability') {
@@ -51,7 +46,7 @@ export function handler(event, context, callback) {
           .then(respondOk)
           .catch(returnError)
       } else {
-        notFound();
+        respondNotFound();
       }
 
     } else if (query.type === 'appointments') {
@@ -71,17 +66,29 @@ export function handler(event, context, callback) {
           .then(respondOk)
           .catch(returnError)
       } else {
-        notFound();
+        respondNotFound();
       }
 
     } else {
-      notFound();
+      respondNotFound();
     }
   } else if (event.httpMethod === 'POST') {
-    // login
-    // sign up
+    let body = JSON.parse(event.body);
+    if (body.type === 'booking') {
+      db.createBooking(body.timeslot, body.coachId, body.playerId, body.gameId)
+        .then(respondCreated)
+        .catch(returnError)
+    } else if (body.type === 'login') {
+
+    } else if (body.type === 'signup') {
+
+    } else {
+      respondNotFound();
+    }
   } else {
-    notFound();
+    respondNotFound();
   }
 
 }
+
+// insert new booking

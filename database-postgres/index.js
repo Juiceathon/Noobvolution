@@ -14,21 +14,11 @@ const pool = new pg.Pool(connection);
 pool.connect();
 
 module.exports = {
-  getGameCoaches: (gameId) => {
-    return pool.query(
-      `SELECT coaches.coach_id, coaches.coach_name, coaches.avatar_url, games.game_name 
-      FROM coaches 
-      INNER JOIN games 
-      ON coaches.game_id = games.game_id AND games.game_id = $1`, 
-      [gameId]);
-  },
-  getCoachDetails: (coachId) => {
-    console.log('getcoach')
-    return pool.query(
-      `SELECT * 
-      FROM coaches 
-      WHERE coach_id = $1`,
-      [coachId]);
+  createBooking: (timeslot, coachId, playerId, gameId) => {
+    // create a new booking
+    return pool.query(`INSERT INTO bookings (timeslot, coach_id, player_id, game_id) 
+      VALUES ($1, $2, $3, $4)`,
+      [timeslot, coachId, playerId, gameId]);
   },
   findCoachBookedTimeslots: (coachId) => {
     // returns booked unix hour time slots for the next 7 days
@@ -45,6 +35,22 @@ module.exports = {
       FROM bookings 
       WHERE player_id = $1 AND timeslot >= $2 AND timeslot < $3`,
       [playerId, toUnix(0), toUnix(7)]);
+  },
+  getGameCoaches: (gameId) => {
+    return pool.query(
+      `SELECT coaches.coach_id, coaches.coach_name, coaches.avatar_url, games.game_name 
+      FROM coaches 
+      INNER JOIN games 
+      ON coaches.game_id = games.game_id AND games.game_id = $1`, 
+      [gameId]);
+  },
+  getCoachDetails: (coachId) => {
+    console.log('getcoach')
+    return pool.query(
+      `SELECT * 
+      FROM coaches 
+      WHERE coach_id = $1`,
+      [coachId]);
   },
   showCoachBookedApmts: (coachId) => {
     // returns booked unix hour time slots for the next 7 days

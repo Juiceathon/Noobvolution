@@ -17644,19 +17644,15 @@ Object.defineProperty(exports, "__esModule", {
 exports.handler = handler;
 function handler(event, context, callback) {
   console.log(event);
-  let query = event.queryStringParameters;
 
   let respondOk = result => {
-    console.log('result here', result);
-    callback(null, {
-      statusCode: 200,
-      body: JSON.stringify(result.rows)
-    });
+    callback(null, { statusCode: 200, body: JSON.stringify(result.rows || '') });
   };
-  let notFound = () => {
-    callback(null, {
-      statusCode: 404
-    });
+  let respondCreated = () => {
+    callback(null, { statusCode: 201, body: 'Created' });
+  };
+  let respondNotFound = () => {
+    callback(null, { statusCode: 404, body: 'Not Found' });
   };
   let returnError = err => {
     callback(err);
@@ -17665,7 +17661,7 @@ function handler(event, context, callback) {
   const db = __webpack_require__(142);
 
   if (event.httpMethod === 'GET') {
-
+    let query = event.queryStringParameters;
     if (query.type === 'search') {
       db.getGameCoaches(query.game) // Returns all coaches for a particular game
       .then(respondOk).catch(returnError);
@@ -17678,7 +17674,7 @@ function handler(event, context, callback) {
           return resultArr[0];
         }).then(respondOk).catch(returnError);
       } else {
-        notFound();
+        respondNotFound();
       }
     } else if (query.type === 'availability') {
       if (query.coachId) {
@@ -17688,7 +17684,7 @@ function handler(event, context, callback) {
         // Returns occupied timeslots for player
         db.findPlayerBookedTimeslots(query.playerId).then(respondOk).catch(returnError);
       } else {
-        notFound();
+        respondNotFound();
       }
     } else if (query.type === 'appointments') {
       if (query.coachId) {
@@ -17704,18 +17700,24 @@ function handler(event, context, callback) {
         // Returns player's booked apmts over next 2 weeks
         db.showPlayerBookedApmts(query.playerId).then(respondOk).catch(returnError);
       } else {
-        notFound();
+        respondNotFound();
       }
     } else {
-      notFound();
+      respondNotFound();
     }
   } else if (event.httpMethod === 'POST') {
-    // login
-    // sign up
+    let body = JSON.parse(event.body);
+    if (body.type === 'booking') {
+      db.createBooking(body.timeslot, body.coachId, body.playerId, body.gameId).then(respondCreated).catch(returnError);
+    } else if (body.type === 'login') {} else if (body.type === 'signup') {} else {
+      respondNotFound();
+    }
   } else {
-    notFound();
+    respondNotFound();
   }
 }
+
+// insert new booking
 
 /***/ }),
 /* 142 */
@@ -17740,17 +17742,10 @@ const pool = new pg.Pool(connection);
 pool.connect();
 
 module.exports = {
-  getGameCoaches: gameId => {
-    return pool.query(`SELECT coaches.coach_id, coaches.coach_name, coaches.avatar_url, games.game_name 
-      FROM coaches 
-      INNER JOIN games 
-      ON coaches.game_id = games.game_id AND games.game_id = $1`, [gameId]);
-  },
-  getCoachDetails: coachId => {
-    console.log('getcoach');
-    return pool.query(`SELECT * 
-      FROM coaches 
-      WHERE coach_id = $1`, [coachId]);
+  createBooking: (timeslot, coachId, playerId, gameId) => {
+    // create a new booking
+    return pool.query(`INSERT INTO bookings (timeslot, coach_id, player_id, game_id) 
+      VALUES ($1, $2, $3, $4)`, [timeslot, coachId, playerId, gameId]);
   },
   findCoachBookedTimeslots: coachId => {
     // returns booked unix hour time slots for the next 7 days
@@ -17763,6 +17758,18 @@ module.exports = {
     return pool.query(`SELECT timeslot 
       FROM bookings 
       WHERE player_id = $1 AND timeslot >= $2 AND timeslot < $3`, [playerId, toUnix(0), toUnix(7)]);
+  },
+  getGameCoaches: gameId => {
+    return pool.query(`SELECT coaches.coach_id, coaches.coach_name, coaches.avatar_url, games.game_name 
+      FROM coaches 
+      INNER JOIN games 
+      ON coaches.game_id = games.game_id AND games.game_id = $1`, [gameId]);
+  },
+  getCoachDetails: coachId => {
+    console.log('getcoach');
+    return pool.query(`SELECT * 
+      FROM coaches 
+      WHERE coach_id = $1`, [coachId]);
   },
   showCoachBookedApmts: coachId => {
     // returns booked unix hour time slots for the next 7 days
@@ -23586,9 +23593,6 @@ module.exports = {
     return moment(unixTime * 1000 * 3600).format('MMM Do YYYY, h:mm a');
   }
 };
-
-console.log(module.exports.toUnix(0));
-console.log(module.exports.formattedFromUnix(module.exports.toUnix(0)));
 
 /***/ })
 /******/ ])));
