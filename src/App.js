@@ -3,12 +3,12 @@ import {
   BrowserRouter as Router, 
   Switch,
   Route, 
-  Link
 } from 'react-router-dom';
 
 // Header and Footer Components
 import Footer from './components/Footer.jsx';
 import FixedMenu from './components/FixedMenu.jsx';
+import LoggedInMenu from './components/LoggedInMenu.jsx';
 
 // Routes
 import LoggedOutHomePage from './components/home/LoggedOutHomePage.jsx';
@@ -33,24 +33,25 @@ class App extends Component {
    this.logInUser = this.logInUser.bind(this);
  }
 
-
- logInUser(e) {
-    
- }
- 
+ logInUser(userid) {
+  this.setState({
+    loggedInUser: userid
+  })
+}
 
   render() {
+
     return (
     <Router>
       <div>
-        <FixedMenu />
+          {this.loggedInUser === null ? <LoggedInMenu /> : <FixedMenu /> }
           <Switch> 
 
             <Route exact path='/home' component={LoggedOutHomePage} />
             <Route path='/about' component={AboutPage} />
             <Route path='/coachlist' component={CoachList} />
-            <Route path='/video*' component={VideoChat} />
-            <Route path='/login' component={LoginPage} />
+            <Route path='/video' component={VideoChat} />
+            <Route path='/login' render={routeProps => <LoginPage {...routeProps} logInUser={this.logInUser} />} />
             <Route path='/signup/coach' component={CoachSignup} />
             <Route path='/signup/player' component={PlayerSignup} />
 

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import { NavLink, withRouter } from 'react-router-dom';
 import {
-  Button,
   Container,
   Menu,
   Dropdown
