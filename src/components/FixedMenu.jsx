@@ -46,15 +46,6 @@ class FixedMenu extends Component {
             Coaches
           </Menu.Item>
 
-          <Menu.Item 
-            as={NavLink}
-            name='VideoChat'
-            active={activeItem === 'VideoChat'}
-            onClick={this.handleItemClick}
-            to='/video'>
-            Video
-          </Menu.Item>
-
           <Menu.Menu position='right'>
             <Menu.Item 
             as={NavLink}
