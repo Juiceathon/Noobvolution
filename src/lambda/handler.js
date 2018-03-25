@@ -21,7 +21,7 @@ export function handler(event, context, callback) {
   if (event.httpMethod === 'GET') {
     let query = event.queryStringParameters;
     if (query.type === 'search') {
-      db.getGameCoaches(query.game) // Returns all coaches for a particular game
+      db.getGameCoaches() // Returns all coaches
         .then(respondOk)
         .catch(returnError)
     } else if (query.type === 'booking'){ 
@@ -39,12 +39,12 @@ export function handler(event, context, callback) {
       }
       
     } else if (query.type === 'availability') {
-      if (query.coachId) { // Returns occupied timeslots for coach
+      if (query.coachId) { // Returns available timeslots for coach
         const lodash = require('lodash');
         let allTimeslots = unix.generateUnixHourSlots();
         db.findCoachBookedTimeslots(query.coachId)
           .then((results) => {
-            return {rows: _.difference(results.rows.map((item) => item.timeslot), allTimeslots)}
+            return { rows: _.difference(allTimeslots, results.rows.map((item) => item.timeslot)) }
           })
           .then(respondOk)
           .catch(returnError)

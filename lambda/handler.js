@@ -62438,6 +62438,7 @@ module.exports = function(length) {
       var index = -1,
           length = array.length;
 
+<<<<<<< HEAD
       start = start == null ? 0 : (+start || 0);
       if (start < 0) {
         start = -start > length ? 0 : (length + start);
@@ -62445,6 +62446,37 @@ module.exports = function(length) {
       end = (end === undefined || end > length) ? length : (+end || 0);
       if (end < 0) {
         end += length;
+=======
+  if (event.httpMethod === 'GET') {
+    let query = event.queryStringParameters;
+    if (query.type === 'search') {
+      db.getGameCoaches() // Returns all coaches
+      .then(respondOk).catch(returnError);
+    } else if (query.type === 'booking') {
+      if (query.coachId) {
+        // Returns all page details for booking a coach
+        let results = [db.getCoachDetails(query.coachId), db.findCoachBookedTimeslots(query.coachId)];
+        Promise.all(results).then(resultArr => {
+          resultArr[0].rows[0].timeslot = resultArr[1].rows[0].timeslot;
+          return resultArr[0];
+        }).then(respondOk).catch(returnError);
+      } else {
+        respondNotFound();
+      }
+    } else if (query.type === 'availability') {
+      if (query.coachId) {
+        // Returns available timeslots for coach
+        const lodash = __webpack_require__(279);
+        let allTimeslots = unix.generateUnixHourSlots();
+        db.findCoachBookedTimeslots(query.coachId).then(results => {
+          return { rows: _.difference(allTimeslots, results.rows.map(item => item.timeslot)) };
+        }).then(respondOk).catch(returnError);
+      } else if (query.playerId) {
+        // Returns occupied timeslots for player
+        db.findPlayerBookedTimeslots(query.playerId).then(respondOk).catch(returnError);
+      } else {
+        respondNotFound();
+>>>>>>> moved unix conversion, created dupe, completed coach profile and bookings
       }
       length = start > end ? 0 : ((end - start) >>> 0);
       start >>>= 0;
@@ -62556,6 +62588,7 @@ module.exports = function(length) {
           seen = isLarge ? createCache() : null,
           result = [];
 
+<<<<<<< HEAD
       if (seen) {
         indexOf = cacheIndexOf;
         isCommon = false;
@@ -62646,6 +62679,73 @@ module.exports = function(length) {
       var result = value;
       if (result instanceof LazyWrapper) {
         result = result.value();
+=======
+module.exports = {
+  createBooking: (timeslot, coachId, playerId, gameId) => {
+    // create a new booking
+    return pool.query(`INSERT INTO bookings (timeslot, coach_id, player_id, game_id) 
+      VALUES ($1, $2, $3, $4)`, [timeslot, coachId, playerId, gameId]);
+  },
+  findCoachBookedTimeslots: coachId => {
+    // returns booked unix hour time slots for the next 7 days
+    return pool.query(`SELECT timeslot 
+      FROM bookings 
+      WHERE coach_id = $1 AND timeslot >= $2 AND timeslot < $3`, [coachId, toUnix(0), toUnix(7)]);
+  },
+  findPlayerBookedTimeslots: playerId => {
+    // returns booked unix hour time slots for the next 7 days
+    return pool.query(`SELECT timeslot 
+      FROM bookings 
+      WHERE player_id = $1 AND timeslot >= $2 AND timeslot < $3`, [playerId, toUnix(0), toUnix(7)]);
+  },
+  getGameCoaches: () => {
+    return pool.query(`SELECT * FROM coaches`);
+  },
+  // getGameCoaches: (gameId) => {
+  //   return pool.query(
+  //     `SELECT coaches.coach_id, coaches.coach_name, coaches.avatar_url, coaches.description, coaches.game_id, 
+  //     coaches.position, coaches.hourly_rate, coaches.coach_email, games.game_name 
+  //     FROM coaches 
+  //     INNER JOIN games 
+  //     ON coaches.game_id = games.game_id AND games.game_id = $1`,
+  //     [gameId]);
+  // },
+  getCoachDetails: coachId => {
+    // returns all coach details
+    return pool.query(`SELECT * 
+      FROM coaches 
+      WHERE coach_id = $1`, [coachId]);
+  },
+  showCoachBookedApmts: coachId => {
+    // returns booked unix hour time slots for the next 7 days
+    return pool.query(`SELECT bookings.timeslot, players.player_name, players.player_email, players.avatar_url, games.game_name, games.game_logo
+      FROM bookings
+      INNER JOIN players
+      ON bookings.player_id = players.player_id AND bookings.coach_id = $1 
+      AND timeslot >= $2 AND timeslot < $3
+      INNER JOIN games
+      ON games.game_id = bookings.game_id`, [coachId, toUnix(0), toUnix(7)]);
+  },
+  showPlayerBookedApmts: playerId => {
+    // returns booked unix hour time slots for the next 7 days
+    return pool.query(`SELECT bookings.timeslot, coaches.coach_name, coaches.session_id, coaches.avatar_url, games.game_name, games.game_logo
+      FROM bookings
+      INNER JOIN coaches
+      ON bookings.coach_id = coaches.coach_id AND bookings.player_id = $1 
+      AND timeslot >= $2 AND timeslot < $3
+      INNER JOIN games
+      ON games.game_id = bookings.game_id`, [playerId, toUnix(0), toUnix(7)]);
+  },
+  loginUser: email => {
+    // logs in either coach or player based on email
+    let player = pool.query(`SELECT * FROM players WHERE player_email = $1`, [email]);
+    let coach = pool.query(`SELECT * FROM coaches WHERE coach_email = $1`, [email]);
+    return Promise.all([player, coach]).then(result => {
+      if (result[0].rowCount) {
+        return result[0];
+      } else if (result[1].rowCount) {
+        return result[1];
+>>>>>>> moved unix conversion, created dupe, completed coach profile and bookings
       }
       var index = -1,
           length = actions.length;
@@ -75935,12 +76035,38 @@ exports.authenticate = function (req, credentialsFunc, options, callback) {
         !attributes.nonce ||
         !attributes.mac) {
 
+<<<<<<< HEAD
         return callback(Boom.badRequest('Missing attributes'), null, artifacts);
+=======
+let moment = __webpack_require__(0);
+module.exports = {
+  toUnix: tillDays => {
+    // converted from seconds to rounded unix hour
+    return Math.floor(moment().add(tillDays, 'days').unix() / 3600);
+  },
+  formattedFromUnix: unixTime => {
+    // converted from unix hour to date
+    return moment(unixTime * 1000 * 3600).format('MMM Do YYYY, h:mm a');
+  },
+  generateUnixHourSlots: () => {
+    let timeslots = [];
+    let todayFirstSlot = Math.floor(moment().startOf('day').add(20, 'hours').unix() / 3600);
+    // creates array of timeslots from tomorrow, through a week
+    for (var i = 1; i < 8; i++) {
+      timeslots.push(todayFirstSlot, todayFirstSlot + 1, todayFirstSlot + 2);
+      todayFirstSlot = todayFirstSlot + 24;
+>>>>>>> moved unix conversion, created dupe, completed coach profile and bookings
     }
 
+<<<<<<< HEAD
     // Fetch Hawk credentials
 
     credentialsFunc(attributes.id, (err, credentials) => {
+=======
+/***/ }),
+/* 279 */
+/***/ (function(module, exports, __webpack_require__) {
+>>>>>>> moved unix conversion, created dupe, completed coach profile and bookings
 
         if (err) {
             return callback(err, credentials || null, artifacts);

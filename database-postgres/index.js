@@ -36,14 +36,19 @@ module.exports = {
       WHERE player_id = $1 AND timeslot >= $2 AND timeslot < $3`,
       [playerId, toUnix(0), toUnix(7)]);
   },
-  getGameCoaches: (gameId) => {
+  getGameCoaches: () => {
     return pool.query(
-      `SELECT coaches.coach_id, coaches.coach_name, coaches.avatar_url, games.game_name 
-      FROM coaches 
-      INNER JOIN games 
-      ON coaches.game_id = games.game_id AND games.game_id = $1`, 
-      [gameId]);
+      `SELECT * FROM coaches`);
   },
+  // getGameCoaches: (gameId) => {
+  //   return pool.query(
+  //     `SELECT coaches.coach_id, coaches.coach_name, coaches.avatar_url, coaches.description, coaches.game_id, 
+  //     coaches.position, coaches.hourly_rate, coaches.coach_email, games.game_name 
+  //     FROM coaches 
+  //     INNER JOIN games 
+  //     ON coaches.game_id = games.game_id AND games.game_id = $1`,
+  //     [gameId]);
+  // },
   getCoachDetails: (coachId) => {
     // returns all coach details
     return pool.query(
