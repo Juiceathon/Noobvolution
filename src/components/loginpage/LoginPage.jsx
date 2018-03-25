@@ -33,7 +33,7 @@ class LoginPage extends Component {
       method: 'POST'
     })
     .then(response => response.json())
-    .then(json => this.props.logInUser(json[0].coach_id))
+    .then(json => this.props.logInUser(json[0]))
   }
 
   render() {

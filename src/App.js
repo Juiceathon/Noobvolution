@@ -33,9 +33,9 @@ class App extends Component {
    this.logInUser = this.logInUser.bind(this);
  }
 
- logInUser(userid) {
+ logInUser(userObj) {
   this.setState({
-    loggedInUser: userid
+    loggedInUser: userObj
   })
 }
 
@@ -48,6 +48,7 @@ class App extends Component {
           <Switch> 
 
             <Route exact path='/home' component={LoggedOutHomePage} />
+            <Route path='/dashboard' component={LoggedInDashboard} />
             <Route path='/about' component={AboutPage} />
             <Route path='/coachlist' component={CoachList} />
             <Route path='/video' component={VideoChat} />

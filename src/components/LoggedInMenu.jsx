@@ -21,9 +21,9 @@ class LoggedInMenu extends Component {
           <Menu.Item
             as={NavLink}
             name='Home'
-            active={activeItem === 'Home'}
+            active={activeItem === 'Dashboard'}
             onClick={this.handleItemClick}
-            to='/home'>
+            to='/dashboard'>
             Home
           </Menu.Item>
 
