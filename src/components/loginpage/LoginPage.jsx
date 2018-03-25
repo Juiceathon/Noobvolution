@@ -13,7 +13,10 @@ import {
 class LoginPage extends Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = {
+      username: '', 
+      password: '', 
+    }
   }
 
   render() {
