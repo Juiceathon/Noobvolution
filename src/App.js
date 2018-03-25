@@ -50,14 +50,9 @@ class App extends Component {
             <Route exact path='/home' component={LoggedOutHomePage} />
             <Route path='/dashboard' component={LoggedInDashboard} />
             <Route path='/about' component={AboutPage} />
-<<<<<<< HEAD
             <Route path='/coachlist' component={CoachList} />
             <Route path='/video' component={VideoChat} />
             <Route path='/login' render={routeProps => <LoginPage {...routeProps} logInUser={this.logInUser} />} />
-=======
-            <Route path='/coachlist' component={CoachList} loggedInUser={this.state.loggedInUser} userType={this.state.userType}/>
-            <Route path='/login' component={LoginPage} />
->>>>>>> moved unix conversion, created dupe, completed coach profile and bookings
             <Route path='/signup/coach' component={CoachSignup} />
             <Route path='/signup/player' component={PlayerSignup} />
 
