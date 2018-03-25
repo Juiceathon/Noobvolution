@@ -54,7 +54,7 @@ class App extends Component {
             <Route path='/dashboard' render={routeProps => <LoggedInDashboard {...routeProps} loggedInUser={this.state.loggedInUser} /> } />
             <Route path='/about' component={AboutPage} />
             <Route path='/coachlist' render={routeProps => <CoachList {...routeProps} loggedInUser={this.state.loggedInUser} />} />
-            <Route path='/video' component={VideoChat} />
+            <Route path='/video/:sessionId' render={routeProps => <VideoChat {...routeProps} /> } />
             <Route path='/login' render={routeProps => <LoginPage {...routeProps} logInUser={this.logInUser} />} />
             <Route path='/signup/coach' component={CoachSignup} />
             <Route path='/signup/player' component={PlayerSignup} />
