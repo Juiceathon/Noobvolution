@@ -26,12 +26,12 @@ class MiddleHomePageSegment extends Component {
                 review the notes taken during the session.
                       </p>
             </Grid.Column>
-            <Grid.Column floated='right' width={6}>
+            <Grid.Column floated='right' width={7}>
               <Image
-                bordered
+                fluid
                 rounded
-                size='large'
-                src='/assets/images/wireframe/white-image.png'
+                size='big'
+                src='https://hypb.imgix.net/image/2018/03/facebook-stream-pc-games-through-live-01.jpg?q=75&w=1000&fit=max&auto=compress%2Cformat'
               />
             </Grid.Column>
           </Grid.Row>

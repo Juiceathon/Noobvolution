@@ -9,7 +9,7 @@ import {
   Segment,
 } from 'semantic-ui-react';
 
-class HomePage extends Component {
+class LoggedOutHomePage extends Component {
   constructor() {
     super()
     this.state = {}
@@ -50,4 +50,4 @@ class HomePage extends Component {
   }
 }
 
-export default HomePage;
+export default LoggedOutHomePage;
