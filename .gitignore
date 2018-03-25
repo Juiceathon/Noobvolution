@@ -29,4 +29,5 @@ yarn-error.log*
 # Code coverage tools
 coverage/
 
-utils/config.js
+src/tokbox/config.js
+src/video/config.json
