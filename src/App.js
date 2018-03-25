@@ -11,7 +11,7 @@ import Footer from './components/Footer.jsx';
 import FixedMenu from './components/FixedMenu.jsx';
 
 // Routes
-import HomePage from './components/home/HomePage.jsx';
+import LoggedOutHomePage from './components/home/LoggedOutHomePage.jsx';
 import CoachList from './components/coachlist/CoachList.jsx';
 import AboutPage from './components/about/AboutPage.jsx';
 
@@ -31,7 +31,7 @@ class App extends Component {
         <FixedMenu />
           <Switch> 
 
-            <Route exact path='/' component={HomePage} />
+            <Route exact path='/home' component={LoggedOutHomePage} />
             <Route path='/about' component={AboutPage} />
             <Route path='/coachlist' component={CoachList} />
 
