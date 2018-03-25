@@ -17,7 +17,7 @@ import AboutPage from './components/about/AboutPage.jsx';
 import LoginPage from './components/loginpage/LoginPage.jsx';
 import CoachSignup from './components/signup/CoachSignup.jsx';
 import PlayerSignup from './components/signup/PlayerSignup.jsx';
-
+import VideoChat from './components/video/VideoChat.jsx';
 
 import './App.css';
 
@@ -34,7 +34,7 @@ class App extends Component {
         <FixedMenu />
           <Switch> 
 
-            <Route exact path='/home' component={LoggedOutHomePage} />
+            <Route exact path='/home' component={VideoChat} />
             <Route path='/about' component={AboutPage} />
             <Route path='/coachlist' component={CoachList} />
             <Route path='/login' component={LoginPage} />

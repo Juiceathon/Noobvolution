@@ -98,7 +98,8 @@ export function handler(event, context, callback) {
           .catch(returnError)
       } else if (body.coachName) { // sign up for coaches
         // ADD TOKEN GENERATION FUNCTION
-        let sessionId = 5;
+        var {createSessionId} = require('../tokbox/tokbox.js');
+        let sessionId = createSessionId();
         db.signUpCoach(body.coachName, body.coachEmail, body.gameId, body.avatarUrl, sessionId, body.hourlyRate, body.position)
           .then(respondCreated)
           .catch(returnError)

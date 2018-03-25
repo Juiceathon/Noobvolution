@@ -1,5 +1,5 @@
 var OpenTok = require('opentok');
-var {API_KEY, API_SECRET} = require('../../utils/config');
+var {API_KEY, API_SECRET} = require('./config');
 var opentok = new OpenTok(API_KEY, API_SECRET);
 
 var createSessionId = () => {
@@ -22,10 +22,3 @@ module.exports = {
   createSessionId,
   createToken
 }
-// export function tokBox (event, context, callback) {
-//   console.log(event);
-//   callback(null, {
-//     statusCode: 200,
-//     body: JSON.stringify({sessionId: "Hello, World!", token: 'AAAAAA'})
-//   });
-// }

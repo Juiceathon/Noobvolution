@@ -1,33 +1,5 @@
-html,
-body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background-color: black;
-}
 
-*,
-*:before,
-*:after {
-    box-sizing: inherit;
-}
-
-.App-header {
-    background-color: white;
-    height: 40px;
-    color: black;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-}
-
-.App-header h1 {
-    font-size: 16px;
-    font-weight: 200;
-}
-
-.App-main {
+.Vid-main {
     position: relative;
     width: 75vw;
     height: calc(75vw * .6);
@@ -35,18 +7,18 @@ body {
     border: 1px solid lightblue;
 }
 
-.App-control-container {
+.Vid-control-container {
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
 }
 
-.App-control-container.hidden {
+.Vid-control-container.hidden {
     display: none;
 }
 
-.App-control-container .ots-video-control {
+.Vid-control-container .ots-video-control {
     width: 50px;
     height: 50px;
     margin: 20px 0 !important;
@@ -59,30 +31,30 @@ body {
     cursor: pointer;
 }
 
-.App-control-container .ots-video-control.audio {
+.Vid-control-container .ots-video-control.audio {
     background-image: url(https://assets.tokbox.com/solutions/images/icon-mic.png);
 }
 
-.App-control-container .ots-video-control.audio:hover,
-.App-control-container .ots-video-control.audio.muted {
+.Vid-control-container .ots-video-control.audio:hover,
+.Vid-control-container .ots-video-control.audio.muted {
     background-image: url(https://assets.tokbox.com/solutions/images/icon-muted-mic.png);
 }
 
-.App-control-container .ots-video-control.video {
+.Vid-control-container .ots-video-control.video {
     background-image: url(https://assets.tokbox.com/solutions/images/icon-video.png);
 }
 
-.App-control-container .ots-video-control.video.muted {
+.Vid-control-container .ots-video-control.video.muted {
     background-image: url(https://assets.tokbox.com/solutions/images/icon-no-video.png);
 }
 
-.App-control-container .ots-video-control.end-call {
+.Vid-control-container .ots-video-control.end-call {
     background-image: url(https://assets.tokbox.com/solutions/images/icon-hang-up.png);
     background-color: red;
 }
 
 
-.App-video-container {
+.Vid-video-container {
     position: relative;
     width: 100%;
     height: 100%;
@@ -91,7 +63,7 @@ body {
     align-items: center;
 }
 
-.App-mask {
+.Vid-mask {
     width: 100%;
     height: 100%;
     position: relative;
@@ -102,20 +74,20 @@ body {
     align-items: center;
 }
 
-.App-mask .react-spinner {
+.Vid-mask .react-spinner {
     position: absolute;
 }
 
-.App-mask .message {
+.Vid-mask .message {
     font-weight: 200;
 }
 
-.App-mask .message.with-spinner {
+.Vid-mask .message.with-spinner {
     position: absolute;
     top: 55%;
 }
 
-.App-mask .message.button {
+.Vid-mask .message.button {
     border: 1px solid white;
     padding: 20px 40px;
     border-radius: 6px;
@@ -125,25 +97,25 @@ body {
     font-size: medium;
 }
 
-.App-mask .message.button:hover {
+.Vid-mask .message.button:hover {
     background-color: lightblue;
     color: black
 }
 
-.App-mask .message.button:focus:active,  .message.button:focus, .message.button:active {
+.Vid-mask .message.button:focus:active,  .message.button:focus, .message.button:active {
   background-image: none;
   outline: none;
   -webkit-box-shadow: none;
   box-shadow: none;
 }
 
-.App-video-container .video-container {
+.Vid-video-container .video-container {
     width: 100%;
     height: 100%;
     display: flex;
 }
 
-.App-video-container .video-container.small {
+.Vid-video-container .video-container.small {
     position: absolute;
     top: 20px;
     right: 20px;
@@ -153,16 +125,16 @@ body {
     z-index: 2;
 }
 
-.App-video-container .video-container.small.left {
+.Vid-video-container .video-container.small.left {
     left: 20px;
     border: 1px solid #00fcc2;
 }
 
-.App-video-container .video-container.hidden {
+.Vid-video-container .video-container.hidden {
     display: none;
 }
 
-.App-video-container .video-container.active-gt2 {
+.Vid-video-container .video-container.active-gt2 {
    display: flex;
    flex-direction: column;
    flex-wrap: wrap;
@@ -170,11 +142,11 @@ body {
    width: 100%;
 }
 
-.App-video-container .video-container.active-gt2.hidden {
+.Vid-video-container .video-container.active-gt2.hidden {
    display: none;
 }
 
-.App-video-container .video-container.active-gt2 .OT_subscriber {
+.Vid-video-container .video-container.active-gt2 .OT_subscriber {
   margin: 0;
   padding: 0;
   display: inline-block;
@@ -185,6 +157,6 @@ body {
   height: auto!important;
 }
 
-.App-video-container .video-container.active-gt2.active-odd .OT_subscriber:first-child {
+.Vid-video-container .video-container.active-gt2.active-odd .OT_subscriber:first-child {
     flex-basis: 100%;
 }

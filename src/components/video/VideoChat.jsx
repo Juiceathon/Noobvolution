@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
 import Spinner from 'react-spinner';
 import classNames from 'classnames';
-
+import {Container} from 'semantic-ui-react';
 import AccCore from 'opentok-accelerator-core';
 import 'opentok-solutions-css';
 
-// import config from '../../lambda/config.js';
 import config from './config.json';
 import './VideoChat.css';
 
-import {createSessionId, createToken} from '../../lambda/tokbox.js';
+import {createToken} from '../../tokbox/tokbox.js';
 
 let otCore;
 const otCoreOptions = {
   credentials: {
     apiKey: config.apiKey,
     sessionId: config.sessionId,
-    token: config.token,
+    token: createToken(config.sessionId),
   },
   // A container can either be a query selector or an HTML Element
   streamContainers(pubSub, type, data, stream) {
@@ -61,8 +60,8 @@ const otCoreOptions = {
   },
   annotation: {
     absoluteParent: {
-      publisher: '.App-video-container',
-      subscriber: '.App-video-container'
+      publisher: '.Vid-video-container',
+      subscriber: '.Vid-video-container'
     }
   },
 };
@@ -80,7 +79,7 @@ const containerClasses = (state) => {
   const activeCameraSubscribersOdd = activeCameraSubscribers % 2;
   const screenshareActive = viewingSharedScreen || sharingScreen;
   return {
-    controlClass: classNames('App-control-container', { hidden: !active }),
+    controlClass: classNames('Vid-control-container', { hidden: !active }),
     localAudioClass: classNames('ots-video-control circle audio', { hidden: !active, muted: !localAudioEnabled }),
     localVideoClass: classNames('ots-video-control circle video', { hidden: !active, muted: !localVideoEnabled }),
     localCallClass: classNames('ots-video-control circle end-call', { hidden: !active }),
@@ -96,13 +95,13 @@ const containerClasses = (state) => {
 };
 
 const connectingMask = () =>
-  <div className="App-mask">
+  <div className="Vid-mask">
     <Spinner />
     <div className="message with-spinner">Connecting</div>
   </div>;
 
 const startCallMask = start =>
-  <div className="App-mask">
+  <div className="Vid-mask">
     <button className="message button clickable" onClick={start}>Click to Video Chat</button>
   </div>;
 
@@ -178,24 +177,26 @@ class VideoChat extends Component {
     } = containerClasses(this.state);
 
     return (
-      <div className="App">
-        <div className="App-main">
-          <div className="App-video-container">
-            { !connected && connectingMask() }
-            { connected && !active && startCallMask(this.startCall)}
-            <div id="cameraPublisherContainer" className={cameraPublisherClass} />
-            <div id="screenPublisherContainer" className={screenPublisherClass} />
-            <div id="cameraSubscriberContainer" className={cameraSubscriberClass} />
-            <div id="screenSubscriberContainer" className={screenSubscriberClass} />
+      <Container style={{ minHeight: 1200, padding: '5em 0em' }}>
+        <div className="Vid">
+          <div className="Vid-main">
+            <div className="Vid-video-container">
+              { !connected && connectingMask() }
+              { connected && !active && startCallMask(this.startCall)}
+              <div id="cameraPublisherContainer" className={cameraPublisherClass} />
+              <div id="screenPublisherContainer" className={screenPublisherClass} />
+              <div id="cameraSubscriberContainer" className={cameraSubscriberClass} />
+              <div id="screenSubscriberContainer" className={screenSubscriberClass} />
+            </div>
+            <div id="controls" className={controlClass}>
+              <div className={localAudioClass} onClick={this.toggleLocalAudio} />
+              <div className={localVideoClass} onClick={this.toggleLocalVideo} />
+              <div className={localCallClass} onClick={this.endCall} />
+            </div>
+            <div id="chat" className="Vid-chat-container" />
           </div>
-          <div id="controls" className={controlClass}>
-            <div className={localAudioClass} onClick={this.toggleLocalAudio} />
-            <div className={localVideoClass} onClick={this.toggleLocalVideo} />
-            <div className={localCallClass} onClick={this.endCall} />
-          </div>
-          <div id="chat" className="App-chat-container" />
         </div>
-      </div>
+      </Container>
     );
   }
 }
