@@ -32,13 +32,19 @@ class App extends Component {
    }
 
    this.logInUser = this.logInUser.bind(this);
+   this.logoutUser = this.logoutUser.bind(this);
  }
 
  logInUser(userObj) {
   this.setState({
     loggedInUser: userObj
   })
+}
 
+logoutUser() {
+  this.setState({
+    loggedInUser: null
+  })
 }
 
   render() {
@@ -46,7 +52,7 @@ class App extends Component {
     return (
     <Router>
       <div>
-          {this.state.loggedInUser !== null ? <LoggedInMenu /> : <FixedMenu /> }
+          {this.state.loggedInUser !== null ? <LoggedInMenu logoutUser={this.logoutUser} /> : <FixedMenu /> }
 
           <Switch> 
 

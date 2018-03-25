@@ -9,7 +9,11 @@ import {
 
 
 class LoggedInMenu extends Component {
-  state = {}
+  constructor(props){
+    super(props);
+    this.state = {}
+  }
+
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
   render() {
@@ -44,6 +48,15 @@ class LoggedInMenu extends Component {
             to='/video'>
             Video
           </Menu.Item>
+          <Menu.Menu position='right'>
+            <Menu.Item
+              as={NavLink}
+              active={activeItem === 'Logout'}
+              onClick={this.props.logoutUser}
+              to='/home'>
+              Logout
+            </Menu.Item>
+          </Menu.Menu>
         </Container>
       </Menu>
     )
