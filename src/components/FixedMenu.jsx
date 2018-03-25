@@ -17,7 +17,7 @@ class FixedMenu extends Component {
     const { activeItem } = this.state;
 
     return (
-      <Menu fixed='top' fitted size='large'>
+      <Menu fixed='top' fitted size='large' inverted>
         <Container>
           <Menu.Item 
             as={NavLink}
@@ -73,7 +73,7 @@ class FixedMenu extends Component {
                   to='/signup/player'>
                   I am a Player
                   </Dropdown.Item>
-                  
+
               </Dropdown.Menu>
             </Dropdown>
           </Menu.Menu>

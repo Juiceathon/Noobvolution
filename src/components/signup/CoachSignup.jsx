@@ -35,16 +35,20 @@ class CoachSignup extends Component {
             </Header.Content>
             </Header>
             <Form.Field>
-              <label>Full Name</label>
-              <input placeholder='Full Name' />
+              <label>Username</label>
+              <input placeholder='Username' />
+            </Form.Field>
+            <Form.Field>
+              <label>Password</label>
+              <input type='password' placeholder='Password' />
             </Form.Field>
             <Form.Field>
               <label>E-Mail</label>
               <input placeholder='E-Mail' />
             </Form.Field>
             <Form.Field>
-              <label>Photo</label>
-              <input placeholder='Upload Photo' />
+              <label>Avatar</label>
+              <input placeholder='Upload Avatar' />
             </Form.Field>
             <Form.Field>
               <label>Gaming Profession</label>
