@@ -24,8 +24,19 @@ import './App.css';
 class App extends Component {
  constructor() {
     super()
-    this.state = {}
+    this.state = {
+    loggedInUser: null,
+    userType: null,
+   }
+
+   this.logInUser = this.logInUser.bind(this);
  }
+
+
+ loggedInUser(e) {
+    
+ }
+ 
 
   render() {
     return (
