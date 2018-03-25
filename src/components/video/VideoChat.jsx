@@ -125,6 +125,11 @@ class VideoChat extends Component {
   }
 
   componentDidMount() {
+    otCoreOptions.credentials = {
+      apiKey: config.apiKey,
+      sessionId: this.props.match.params.sessionId, // Change to get session id from url
+      token: createToken(this.props.match.params.sessionId), // generate token from session id
+    }
     otCore = new AccCore(otCoreOptions);
     otCore.connect().then(() => this.setState({ connected: true }));
     const events = [
