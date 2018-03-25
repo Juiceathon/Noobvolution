@@ -17,7 +17,7 @@ import AboutPage from './components/about/AboutPage.jsx';
 import LoginPage from './components/loginpage/LoginPage.jsx';
 import CoachSignup from './components/signup/CoachSignup.jsx';
 import PlayerSignup from './components/signup/PlayerSignup.jsx';
-
+import VideoChat from './components/video/VideoChat.jsx';
 
 import './App.css';
 

@@ -25,6 +25,7 @@
   "dependencies": {
     "angular": "^1.6.3",
     "body-parser": "^1.17.2",
+    "classnames": "^2.2.5",
     "express": "^4.15.0",
     "jquery": "^3.1.1",
     "moment": "^2.21.0",
@@ -32,6 +33,12 @@
     "mysql": "^2.13.0",
     "netlify-lambda": "^0.3.0",
     "opentok": "^2.6.2",
+    "opentok-accelerator-core": "^2.0.14",
+    "opentok-annotation": "^2.0.59",
+    "opentok-archiving": "^1.0.19",
+    "opentok-screen-sharing": "^1.0.32",
+    "opentok-solutions-css": "0.0.43",
+    "opentok-text-chat": "^1.0.30",
     "path": "^0.12.7",
     "pg": "^7.4.1",
     "pg-native": "^2.2.0",
@@ -40,6 +47,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.1",
+    "react-spinner": "^0.2.7",
     "semantic-ui-css": "^2.3.1",
     "semantic-ui-react": "^0.79.0",
     "url-loader": "^1.0.1"
