@@ -41,7 +41,7 @@ class CoachesList extends Component {
     return (
     <div style={{ padding: '4em 0em 0em 4em' }}>
       <div id="modal-mount" />
-      <div style={{'text-align': 'center', padding: '2em'}}>
+      <div style={{'textAlign': 'center', padding: '2em'}}>
         <Dropdown text='Filter by Game' icon='filter' floating labeled button className='icon'>
           <Dropdown.Menu>
             <Dropdown.Item onClick={this.handleSelection}>League of Legends</Dropdown.Item>
@@ -50,7 +50,7 @@ class CoachesList extends Component {
         </Dropdown>
       </div>
       <div>
-        {this.state.filteredCoaches.map((coach) => <CoachProfile userObj={this.props.userObj} coach={coach}/>)}
+        {this.state.filteredCoaches.map((coach) => <CoachProfile loggedInUser={this.props.loggedInUser} coach={coach}/>)}
       </div>
     </div>
     )
