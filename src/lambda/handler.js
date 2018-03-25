@@ -16,7 +16,7 @@ export function handler(event, context, callback) {
   };
   
   const db = require('../../database-postgres/index');
-  const unix = require('../../database-postgres/unixConversion');
+  const unix = require('../../utils/unixConversion');
 
   if (event.httpMethod === 'GET') {
     let query = event.queryStringParameters;

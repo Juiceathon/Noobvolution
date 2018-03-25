@@ -60,28 +60,15 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 280);
+/******/ 	return __webpack_require__(__webpack_require__.s = 50);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 280:
-/***/ (function(module, exports, __webpack_require__) {
+/***/ 50:
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.handler = handler;
-function handler(event, context, callback) {
-  console.log(event);
-  callback(null, {
-    statusCode: 200,
-    body: JSON.stringify({ msg: "Hello, World!" })
-  });
-}
+throw new Error("Module build failed: Error: ENOENT: no such file or directory, open '/Users/albert/Desktop/Noobvolution/src/lambda/config.js'");
 
 /***/ })
 
