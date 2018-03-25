@@ -1,7 +1,7 @@
 const pg = require('pg');
 const path = require('path');
 const moment = require('moment');
-const { toUnix, formattedFromUnix} = require('./unixConversion');
+const { toUnix, formattedFromUnix} = require('../utils/unixConversion');
 
 const connection = {
   user: 'thejuice',
