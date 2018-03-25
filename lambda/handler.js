@@ -17646,7 +17646,8 @@ function handler(event, context, callback) {
   console.log(event);
   let query = event.queryStringParameters;
 
-  let respondOK = result => {
+  let respondOk = result => {
+    console.log('result here', result);
     callback(null, {
       statusCode: 200,
       body: JSON.stringify(result.rows)
@@ -17664,18 +17665,57 @@ function handler(event, context, callback) {
   const db = __webpack_require__(142);
 
   if (event.httpMethod === 'GET') {
+
     if (query.type === 'search') {
-      db.getGameCoaches(query.game).then(respondOK).catch(returnError);
+      db.getGameCoaches(query.game) // Returns all coaches for a particular game
+      .then(respondOk).catch(returnError);
+    } else if (query.type === 'booking') {
+      if (query.coachId) {
+        // Returns all page details for booking a coach
+        let results = [db.getCoachDetails(query.coachId), db.findCoachBookedTimeslots(query.coachId)];
+        Promise.all(results).then(resultArr => {
+          resultArr[0].rows[0].timeslot = resultArr[1].rows[0].timeslot;
+          return resultArr[0];
+        }).then(respondOk).catch(returnError);
+      } else {
+        notFound();
+      }
+    } else if (query.type === 'availability') {
+      if (query.coachId) {
+        // Returns occupied timeslots for coach
+        db.findCoachBookedTimeslots(query.coachId).then(respondOk).catch(returnError);
+      } else if (query.playerId) {
+        // Returns occupied timeslots for player
+        db.findPlayerBookedTimeslots(query.playerId).then(respondOk).catch(returnError);
+      } else {
+        notFound();
+      }
+    } else if (query.type === 'appointments') {
+      if (query.coachId) {
+        // Returns coaches booked apmts over next 2 weeks
+        let results = [db.showCoachBookedApmts(query.coachId), db.getCoachDetails(query.coachId)];
+        Promise.all(results).then(resultArr => {
+          resultArr[0].rows.forEach(apmt => {
+            apmt.session_id = resultArr[1].rows[0].session_id;
+          });
+          return resultArr[0];
+        }).then(respondOk).catch(returnError);
+      } else if (query.playerId) {
+        // Returns player's booked apmts over next 2 weeks
+        db.showPlayerBookedApmts(query.playerId).then(respondOk).catch(returnError);
+      } else {
+        notFound();
+      }
     } else {
       notFound();
     }
-  } else if (event.httpMethod === 'POST') {} else {
+  } else if (event.httpMethod === 'POST') {
+    // login
+    // sign up
+  } else {
     notFound();
   }
 }
-
-// login
-// pull
 
 /***/ }),
 /* 142 */
@@ -17687,7 +17727,7 @@ function handler(event, context, callback) {
 const pg = __webpack_require__(9);
 const path = __webpack_require__(4);
 const moment = __webpack_require__(0);
-const unixHours = __webpack_require__(179);
+const { toUnix, formattedFromUnix } = __webpack_require__(178);
 
 const connection = {
   user: 'thejuice',
@@ -17701,142 +17741,193 @@ pool.connect();
 
 module.exports = {
   getGameCoaches: gameId => {
-    return pool.query(`SELECT coaches.coach_id, coaches.coach_name, coaches.avatar_url, games.game_name from coaches 
+    return pool.query(`SELECT coaches.coach_id, coaches.coach_name, coaches.avatar_url, games.game_name 
+      FROM coaches 
       INNER JOIN games 
       ON coaches.game_id = games.game_id AND games.game_id = $1`, [gameId]);
   },
-  findCoachBookings: coachId => {
-    // return all bookings in the next 2 weeks
-    return pool.query(`SELECT timeslot from bookings 
-      WHERE timeslot = $1 AND timeslot >= $2 AND timeslot < $3`, [coachId, unixHours(0), unixHours(7)]);
+  getCoachDetails: coachId => {
+    console.log('getcoach');
+    return pool.query(`SELECT * 
+      FROM coaches 
+      WHERE coach_id = $1`, [coachId]);
   },
-  findPlayerBookings: playerId => {
-    // return all bookings in the next 2 weeks
+  findCoachBookedTimeslots: coachId => {
+    // returns booked unix hour time slots for the next 7 days
+    return pool.query(`SELECT timeslot 
+      FROM bookings 
+      WHERE coach_id = $1 AND timeslot >= $2 AND timeslot < $3`, [coachId, toUnix(0), toUnix(7)]);
+  },
+  findPlayerBookedTimeslots: playerId => {
+    // returns booked unix hour time slots for the next 7 days
+    return pool.query(`SELECT timeslot 
+      FROM bookings 
+      WHERE player_id = $1 AND timeslot >= $2 AND timeslot < $3`, [playerId, toUnix(0), toUnix(7)]);
+  },
+  showCoachBookedApmts: coachId => {
+    // returns booked unix hour time slots for the next 7 days
+    return pool.query(`SELECT bookings.timeslot, players.player_name, players.email, players.avatar_url, games.game_name, games.game_logo
+      FROM bookings
+      INNER JOIN players
+      ON bookings.player_id = players.player_id AND bookings.coach_id = $1 
+      AND timeslot >= $2 AND timeslot < $3
+      INNER JOIN games
+      ON games.game_id = bookings.game_id`, [coachId, toUnix(0), toUnix(7)]);
+  },
+  showPlayerBookedApmts: playerId => {
+    // returns booked unix hour time slots for the next 7 days
+    return pool.query(`SELECT bookings.timeslot, coaches.coach_name, coaches.session_id, coaches.avatar_url, games.game_name, games.game_logo
+      FROM bookings
+      INNER JOIN coaches
+      ON bookings.coach_id = coaches.coach_id AND bookings.player_id = $1 
+      AND timeslot >= $2 AND timeslot < $3
+      INNER JOIN games
+      ON games.game_id = bookings.game_id`, [playerId, toUnix(0), toUnix(7)]);
   }
+  // new booking
+  // sign up
+  // log in
+  // 
 
-};
-const getGameCoaches = function (gameId) {
-  return pool.query(`SELECT * from coaches INNER JOIN games
-  ON coaches.game_id = games.game_id AND  WHERE game_id=$1`, [gameId]);
-};
+  // const getGameCoaches = function (gameId) {
+  //   return pool.query(`SELECT * from coaches INNER JOIN games
+  //   ON coaches.game_id = games.game_id AND  WHERE game_id=$1`, [gameId]);
+  // };
 
-//get all users following
-const getUsersFollowing = function (userId) {
-  return pool.query('SELECT users.user_id, users.name, users.description, users.prof_pic \
-    FROM users INNER JOIN followers \
-    ON followers.following_user = $1 AND followers.followed_user = users.user_id', [userId]);
-};
+  // //get all users following
+  // const getUsersFollowing = function (userId) {
+  //   return pool.query('SELECT users.user_id, users.name, users.description, users.prof_pic \
+  //     FROM users INNER JOIN followers \
+  //     ON followers.following_user = $1 AND followers.followed_user = users.user_id',
+  //     [userId]);
+  // };
 
-//get user followers
-const getUsersFollowers = function (userId) {
-  return pool.query('SELECT users.user_id, users.name, users.description, users.prof_pic \
-    FROM users INNER JOIN followers \
-    ON followers.followed_user = $1 AND followers.following_user = users.user_id', [userId]);
-};
+  // //get user followers
+  // const getUsersFollowers = function (userId) {
+  //   return pool.query('SELECT users.user_id, users.name, users.description, users.prof_pic \
+  //     FROM users INNER JOIN followers \
+  //     ON followers.followed_user = $1 AND followers.following_user = users.user_id',
+  //     [userId]);
+  // };
 
-//get all posts following
-const getAllPosts = function (userId) {
-  return pool.query('SELECT users.user_id, users.prof_pic, users.name, posts.post_id, posts.img, posts.like_count, posts.user_id, posts.caption, posts.created_at FROM posts \
-  INNER JOIN followers ON followers.following_user = $1 AND \
-    followers.followed_user = posts.user_id \
-    INNER JOIN users ON posts.user_id = users.user_id ORDER BY posts.created_at DESC', [userId]);
-};
+  // //get all posts following
+  // const getAllPosts = function (userId) {
+  //   return pool.query('SELECT users.user_id, users.prof_pic, users.name, posts.post_id, posts.img, posts.like_count, posts.user_id, posts.caption, posts.created_at FROM posts \
+  //   INNER JOIN followers ON followers.following_user = $1 AND \
+  //     followers.followed_user = posts.user_id \
+  //     INNER JOIN users ON posts.user_id = users.user_id ORDER BY posts.created_at DESC', [userId]);
+  // };
 
-const getPostsLiked = function (userId, postsIdArray) {
-  return pool.query('SELECT likes.post_id FROM likes INNER JOIN posts \
-    ON posts.post_id = likes.post_id AND likes.user_id = $1', [userId]);
-};
+  // const getPostsLiked = function (userId, postsIdArray) {
+  //   return pool.query('SELECT likes.post_id FROM likes INNER JOIN posts \
+  //     ON posts.post_id = likes.post_id AND likes.user_id = $1',
+  //     [userId]);
+  // };
 
-const insertPost = function (caption, userId, fileName, timestamp) {
-  const AWSUrl = 'https://s3-us-west-1.amazonaws.com/lawa-ig/images/';
-  const fileUrl = `${AWSUrl}${userId}-${encodeURIComponent(timestamp)}${fileName.slice(-4)}`;
-  return pool.query('INSERT INTO posts(img, like_count, user_id, caption, created_at) \
-    VALUES ($1, $2, $3, $4, $5)', [fileUrl, 0, userId, caption, timestamp]);
-};
-//for search and profile change
-const getAllUsernames = function () {
-  return pool.query('SELECT user_id, name FROM users');
-};
+  // const insertPost = function (caption, userId, fileName, timestamp) {
+  //   const AWSUrl = 'https://s3-us-west-1.amazonaws.com/lawa-ig/images/';
+  //   const fileUrl = `${AWSUrl}${userId}-${encodeURIComponent(timestamp)}${fileName.slice(-4)}`;
+  //   return pool.query('INSERT INTO posts(img, like_count, user_id, caption, created_at) \
+  //     VALUES ($1, $2, $3, $4, $5)',
+  //     [fileUrl, 0, userId, caption, timestamp]);
+  // };
+  // //for search and profile change
+  // const getAllUsernames = function () {
+  //   return pool.query('SELECT user_id, name FROM users');
+  // };
 
-const checkForUser = function (facebookId) {
-  return pool.query('SELECT * FROM users WHERE user.fb_id = $1', [facebookId]);
-};
-const insertNewFbUser = function (newUser) {
-  return pool.query('INSERT INTO users (fb_id, fb_name, prof_pic) VALUES ($1, $2, $3)', [newUser.id, newUser.displayName, newUser.photo]);
-};
+  // const checkForUser = function (facebookId) {
+  //   return pool.query('SELECT * FROM users WHERE user.fb_id = $1', [facebookId]);
+  // };
+  // const insertNewFbUser = function (newUser) {
+  //   return pool.query('INSERT INTO users (fb_id, fb_name, prof_pic) VALUES ($1, $2, $3)', [newUser.id, newUser.displayName, newUser.photo]);
+  // };
 
-const insertNewUser = function (email, name, description) {
-  return pool.query('INSERT INTO users (email, name, description, created_at) VALUES ($1, $2, $3, $4)', [email, name, description, moment().format()]);
-};
+  // const insertNewUser = function (email, name, description) {
+  //   return pool.query('INSERT INTO users (email, name, description, created_at) VALUES ($1, $2, $3, $4)', [email, name, description, moment().format()]);
+  // };
 
-const checkForEmail = function (email) {
-  return pool.query('SELECT users.user_id FROM users WHERE users.email = $1', [email]);
-};
+  // const checkForEmail = function (email) {
+  //   return pool.query('SELECT users.user_id FROM users WHERE users.email = $1', [email]);
+  // };
 
-const checkForFbId = function (id) {
-  return pool.query('SELECT users.user_id FROM users WHERE users.fb_id = $1', [id]);
-};
+  // const checkForFbId = function (id) {
+  //   return pool.query('SELECT users.user_id FROM users WHERE users.fb_id = $1', [id]);
+  // };
 
-const getUserProfile = function (userId) {
-  return pool.query('SELECT users.user_id, users.name, users.prof_pic, users.description FROM users \
-    WHERE users.user_id = $1', [userId]);
-};
+  // const getUserProfile = function (userId) {
+  //   return pool.query('SELECT users.user_id, users.name, users.prof_pic, users.description FROM users \
+  //     WHERE users.user_id = $1',
+  //     [userId]);
+  // };
 
-const getUserPosts = function (usedId) {
-  return pool.query('SELECT * FROM posts WHERE user_id = $1 ORDER BY created_at DESC ', [userId]);
-};
+  // const getUserPosts = function (usedId) {
+  //   return pool.query('SELECT * FROM posts WHERE user_id = $1 ORDER BY created_at DESC ', [userId]);
+  // };
 
-const addLike = function (userId, postId) {
-  return pool.query('INSERT INTO likes (user_id, post_id, created_at) VALUES ($1, $2, $3)', [userId, postId, moment().format()]);
-};
+  // const addLike = function(userId, postId) {
+  //   return pool.query('INSERT INTO likes (user_id, post_id, created_at) VALUES ($1, $2, $3)',
+  //     [userId, postId, moment().format()]);
+  // };
 
-const rmLike = function (userId, postId) {
-  return pool.query('DELETE from likes where likes.user_id = $1 and likes.post_id = $2', [userId, postId]);
-};
+  // const rmLike = function(userId, postId) {
+  //   return pool.query('DELETE from likes where likes.user_id = $1 and likes.post_id = $2',
+  //     [userId, postId]);
+  // };
 
-const checkLike = function (userId, postId) {
-  return pool.query('SELECT * from likes WHERE likes.user_id = $1 and likes.post_id = $2', [userId, postId]);
-};
+  // const checkLike = function(userId, postId) {
+  //   return pool.query('SELECT * from likes WHERE likes.user_id = $1 and likes.post_id = $2',
+  //     [userId, postId]);
+  // };
 
-const addFollow = function (followerId, followedId) {
-  return pool.query('INSERT INTO followers (followed_user, following_user, created_at) VALUES ($1, $2, $3)', [followedId, followerId, moment().format()]);
-};
+  // const addFollow = function(followerId, followedId) {
+  //   return pool.query('INSERT INTO followers (followed_user, following_user, created_at) VALUES ($1, $2, $3)',
+  //     [followedId, followerId, moment().format()]);
+  // };
 
-const rmFollow = function (followerId, followedId) {
-  return pool.query('DELETE from followers WHERE followers.followed_user = $1 AND followers.following_user = $2; ', [followedId, followerId]);
-};
+  // const rmFollow = function(followerId, followedId) {
+  //   return pool.query('DELETE from followers WHERE followers.followed_user = $1 AND followers.following_user = $2; ',
+  //     [followedId, followerId]);
+  // };
 
-const checkFollow = function (followerId, followedId) {
-  return pool.query('SELECT * FROM followers WHERE followers.followed_user = $1 AND followers.following_user = $2', [followedId, followerId]);
-};
+  // const checkFollow = function(followerId, followedId) {
+  //   return pool.query('SELECT * FROM followers WHERE followers.followed_user = $1 AND followers.following_user = $2',
+  //     [followedId, followerId]);
+  // };
 
-const addComment = function (userId, postId, text) {
-  return pool.query('INSERT INTO comments (user_id, post_id, text, created_at) VALUES ($1, $2, $3, $4)', [userId, postId, text, moment().format()]);
-};
+  // const addComment = function(userId, postId, text) {
+  //   return pool.query('INSERT INTO comments (user_id, post_id, text, created_at) VALUES ($1, $2, $3, $4)',
+  //     [userId, postId, text, moment().format()]);
+  // };
 
-const rmComment = function (commentId) {
-  return pool.query('DELETE from comments WHERE comments.comment_id = $1', [commentId]);
-};
+  // const rmComment = function(commentId) {
+  //   return pool.query('DELETE from comments WHERE comments.comment_id = $1',
+  //     [commentId]);
+  // };
 
-const getLikesOnPost = function (postId) {
-  return pool.query('SELECT users.user_id, users.name, users.prof_pic \
-    FROM users INNER JOIN likes \
-    ON likes.post_id = $1 AND likes.user_id = users.user_id', [postId]);
-};
+  // const getLikesOnPost = function (postId) {
+  //   return pool.query('SELECT users.user_id, users.name, users.prof_pic \
+  //     FROM users INNER JOIN likes \
+  //     ON likes.post_id = $1 AND likes.user_id = users.user_id',
+  //     [postId]);
+  // };
 
-const getAllCommentFromPost = function (postId) {
-  return pool.query('SELECT comments.comment_id, users.name, comments.text FROM comments INNER JOIN users ON comments.post_id = $1\
-   AND comments.user_id = users.user_id ORDER BY comments.created_at ASC', [postId]);
-};
+  // const getAllCommentFromPost = function(postId) {
+  //   return pool.query('SELECT comments.comment_id, users.name, comments.text FROM comments INNER JOIN users ON comments.post_id = $1\
+  //    AND comments.user_id = users.user_id ORDER BY comments.created_at ASC',
+  //     [postId]);
+  // };
 
-const updateProfImg = function (userId, fileName, timestamp) {
-  const AWSUrl = 'https://s3-us-west-1.amazonaws.com/lawa-ig/images/';
-  const fileUrl = `${AWSUrl}${userId}-${encodeURIComponent(timestamp)}${fileName.slice(-4)}`;
-  return pool.query('UPDATE users SET prof_pic = $1 WHERE user_id = $2', [fileUrl, userId]);
-};
+  // const updateProfImg = function (userId, fileName, timestamp) {
+  //   const AWSUrl = 'https://s3-us-west-1.amazonaws.com/lawa-ig/images/';
+  //   const fileUrl = `${AWSUrl}${userId}-${encodeURIComponent(timestamp)}${fileName.slice(-4)}`;
+  //   return pool.query('UPDATE users SET prof_pic = $1 WHERE user_id = $2', [fileUrl, userId])
+  // }
 
-const updateDescription = function (userId, description) {
-  return pool.query('UPDATE users SET description = $1 WHERE user_id = $2', [description, userId]);
+  // const updateDescription = function(userId, description) {
+  //   return pool.query('UPDATE users SET description = $1 WHERE user_id = $2', [description, userId])
+  // }
+
 };
 
 /***/ }),
@@ -21835,7 +21926,7 @@ var consumeResults = function (pq, cb) {
 /* 173 */
 /***/ (function(module, exports) {
 
-module.exports = {"_from":"pg-native","_id":"pg-native@2.2.0","_inBundle":false,"_integrity":"sha1-vIR1b07L9gD/fLSOpYVBQYMM8eQ=","_location":"/pg-native","_phantomChildren":{"core-util-is":"1.0.2","inherits":"2.0.3"},"_requested":{"type":"tag","registry":true,"raw":"pg-native","name":"pg-native","escapedName":"pg-native","rawSpec":"","saveSpec":null,"fetchSpec":"latest"},"_requiredBy":["#USER","/"],"_resolved":"https://registry.npmjs.org/pg-native/-/pg-native-2.2.0.tgz","_shasum":"bc84756f4ecbf600ff7cb48ea5854141830cf1e4","_spec":"pg-native","_where":"/Users/albert/Desktop/Noobvolution","author":{"name":"Brian M. Carlson"},"bugs":{"url":"https://github.com/brianc/node-pg-native/issues"},"bundleDependencies":false,"dependencies":{"libpq":"^1.7.0","pg-types":"^1.12.1","readable-stream":"1.0.31"},"deprecated":false,"description":"A slightly nicer interface to Postgres over node-libpq","devDependencies":{"async":"^0.9.0","concat-stream":"^1.4.6","eslint":"4.2.0","eslint-config-standard":"10.2.1","eslint-plugin-import":"2.7.0","eslint-plugin-node":"5.1.0","eslint-plugin-promise":"3.5.0","eslint-plugin-standard":"3.0.1","generic-pool":"^2.1.1","lodash":"^2.4.1","mocha":"3.4.2","okay":"^0.3.0","pg":"*","semver":"^4.1.0"},"homepage":"https://github.com/brianc/node-pg-native","keywords":["postgres","pg","libpq"],"license":"MIT","main":"index.js","name":"pg-native","repository":{"type":"git","url":"git://github.com/brianc/node-pg-native.git"},"scripts":{"test":"mocha && eslint ."},"version":"2.2.0"}
+module.exports = {"_from":"pg-native@^2.2.0","_id":"pg-native@2.2.0","_inBundle":false,"_integrity":"sha1-vIR1b07L9gD/fLSOpYVBQYMM8eQ=","_location":"/pg-native","_phantomChildren":{"core-util-is":"1.0.2","inherits":"2.0.3"},"_requested":{"type":"range","registry":true,"raw":"pg-native@^2.2.0","name":"pg-native","escapedName":"pg-native","rawSpec":"^2.2.0","saveSpec":null,"fetchSpec":"^2.2.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/pg-native/-/pg-native-2.2.0.tgz","_shasum":"bc84756f4ecbf600ff7cb48ea5854141830cf1e4","_spec":"pg-native@^2.2.0","_where":"/Users/albert/Desktop/Noobvolution","author":{"name":"Brian M. Carlson"},"bugs":{"url":"https://github.com/brianc/node-pg-native/issues"},"bundleDependencies":false,"dependencies":{"libpq":"^1.7.0","pg-types":"^1.12.1","readable-stream":"1.0.31"},"deprecated":false,"description":"A slightly nicer interface to Postgres over node-libpq","devDependencies":{"async":"^0.9.0","concat-stream":"^1.4.6","eslint":"4.2.0","eslint-config-standard":"10.2.1","eslint-plugin-import":"2.7.0","eslint-plugin-node":"5.1.0","eslint-plugin-promise":"3.5.0","eslint-plugin-standard":"3.0.1","generic-pool":"^2.1.1","lodash":"^2.4.1","mocha":"3.4.2","okay":"^0.3.0","pg":"*","semver":"^4.1.0"},"homepage":"https://github.com/brianc/node-pg-native","keywords":["postgres","pg","libpq"],"license":"MIT","main":"index.js","name":"pg-native","repository":{"type":"git","url":"git://github.com/brianc/node-pg-native.git"},"scripts":{"test":"mocha && eslint ."},"version":"2.2.0"}
 
 /***/ }),
 /* 174 */
@@ -23478,17 +23569,26 @@ module.exports = webpackContext;
 webpackContext.id = 177;
 
 /***/ }),
-/* 178 */,
-/* 179 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 let moment = __webpack_require__(0);
-module.exports = tillDays => {
-  return Math.floor(moment().add(tillDays, 'days').unix() / 60);
+module.exports = {
+  toUnix: tillDays => {
+    // converted from seconds to rounded unix hour
+    return Math.floor(moment().add(tillDays, 'days').unix() / 3600);
+  },
+  formattedFromUnix: unixTime => {
+    // converted from unix hour to date
+    return moment(unixTime * 1000 * 3600).format('MMM Do YYYY, h:mm a');
+  }
 };
+
+console.log(module.exports.toUnix(0));
+console.log(module.exports.formattedFromUnix(module.exports.toUnix(0)));
 
 /***/ })
 /******/ ])));
