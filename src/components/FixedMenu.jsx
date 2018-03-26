@@ -27,14 +27,14 @@ class FixedMenu extends Component {
             Home
           </Menu.Item>
 
-          <Menu.Item 
+          {/* <Menu.Item 
             as={NavLink}
             name='About'
             active={activeItem === 'About'}
             onClick={this.handleItemClick}
             to='/about'>
             About
-          </Menu.Item>
+          </Menu.Item> */}
 
           <Menu.Item 
             as={NavLink}
