@@ -25,7 +25,7 @@ class LoggedOutHomePage extends Component {
           style={{ minHeight: 700, padding: '1em 0em', backgroundImage: `url('https://orig00.deviantart.net/84ec/f/2013/179/7/6/spirit_guard_udyr__animated_gif__by_darkstriiker-d6b1ard.gif')`}}
           vertical
         >
-          <Container text>
+          <Container text style={{textAlign: 'left'}}>
             <Header
               as='h1'
               content='Noobvolution'
@@ -38,6 +38,7 @@ class LoggedOutHomePage extends Component {
               inverted
               style={{ fontSize: '1.7em', fontWeight: 'normal' }}
             />
+            <br />
             <Button primary size='huge'>
               Get Started
               <Icon name='right arrow' />
