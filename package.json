@@ -32,6 +32,7 @@
     "mongoose": "^4.8.6",
     "mysql": "^2.13.0",
     "netlify-lambda": "^0.3.0",
+    "node-gyp": "^3.6.2",
     "opentok": "^2.6.2",
     "opentok-accelerator-core": "^2.0.14",
     "opentok-annotation": "^2.0.59",
