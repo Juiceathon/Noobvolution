@@ -7,6 +7,7 @@ import {
   Header,
   Icon,
   Segment,
+  Image
 } from 'semantic-ui-react';
 
 class LoggedOutHomePage extends Component {
