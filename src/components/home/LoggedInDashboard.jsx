@@ -1,7 +1,10 @@
 import React, { Component } from 'react'; 
 import { 
+  Button, 
   Icon, 
-  Image as ImageComponent,  
+  Image as ImageComponent, 
+  Item, 
+  Label, 
   Grid,
   Card,
   Feed, 
