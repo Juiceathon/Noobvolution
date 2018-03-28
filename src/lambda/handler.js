@@ -1,8 +1,7 @@
 export function handler(event, context, callback) {
-  console.log(event)
+  console.log(`Serving ${event.httpMethod} request to ${event.path}`)
 
   let respondOk = (result) => {
-    console.log(result)
     callback(null, {statusCode: 200, body: JSON.stringify(result.rows || [])})
   }
   let respondCreated = () => {
