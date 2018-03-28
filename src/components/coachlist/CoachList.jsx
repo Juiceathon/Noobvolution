@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dropdown, Grid } from 'semantic-ui-react'
+import { Dropdown } from 'semantic-ui-react'
 import CoachProfile from './CoachProfile.jsx';
 
 class CoachesList extends Component {

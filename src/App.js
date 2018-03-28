@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router, 
   Switch,
   Route, 
-  Redirect
 } from 'react-router-dom';
 
 // Header and Footer Components
@@ -56,6 +55,7 @@ logoutUser() {
 
           <Switch> 
 
+            <Route exact path='/' component={LoggedOutHomePage} />
             <Route exact path='/home' component={LoggedOutHomePage} />
             <Route path='/dashboard' render={routeProps => <LoggedInDashboard {...routeProps} loggedInUser={this.state.loggedInUser} /> } />
             <Route path='/about' component={AboutPage} />
