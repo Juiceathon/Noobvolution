@@ -7,7 +7,7 @@ const connection = {
   user: 'thejuice',
   password: 'juiceathon',
   host: 'noobvolution-db.ckepohehkx7u.us-west-1.rds.amazonaws.com',
-  database: 'noobvolution-db'
+  database: 'noobvolution'
 }
 
 const pool = new pg.Pool(connection);
