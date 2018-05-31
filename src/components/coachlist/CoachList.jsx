@@ -19,7 +19,7 @@ class CoachesList extends Component {
   }
 
   handleSelection(event, data) {
-    let gameId = data.children === "League of Legends" ? 3 : 4;
+    let gameId = data.children === "League of Legends" ? 2 : 3;
     let filtered = this.state.coaches.filter((coach) => {
       return coach.game_id === gameId;
     })

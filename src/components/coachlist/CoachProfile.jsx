@@ -63,7 +63,7 @@ class CoachProfile extends Component {
             <Item.Content>
               <Item.Header as='coach'>{this.props.coach.coach_name}</Item.Header>
               <Item.Meta>
-                <span className='coach-game'>{this.props.coach.game_id === 3 ? 'League of Legends' : 'Dota 2'}</span>
+                <span className='coach-game'>{this.props.coach.game_id === 1 ? 'League of Legends' : 'Dota 2'}</span>
               </Item.Meta>
               <Item.Meta>
                 <span className='coach-position'>Position: {this.props.coach.position}</span>
